@@ -1,0 +1,138 @@
+\section{ADR-0001: Prime-Indexed Hilbert Tensor State Space and Sheaf Morphology}
+\label{sec:adr0001}
+
+\begin{adrbox}{ADR-0001: Prime-Indexed Hilbert State Space}{Status: \statusbadge{ACCEPTED}}
+\textbf{Date:} 2026-11-23 \\
+\textbf{Context:} High-dimensional non-linear cognitive progression and dynamic narrative branching. \\
+\textbf{Deciders:} Multiplicity Core Architecture Team, QARI Working Group \\
+\textbf{Status:} Accepted / Production Target
+\end{adrbox}
+
+\subsection{Context and Problem Statement}
+Traditional game engines encode state progression using Finite State Machines (FSMs), Hierarchical State Machines (HSMs), or procedural script graphs \cite{gregory2018game, nystrom2014game}. In complex interactive learning environments and multi-layered narrative games, these models suffer from combinatorial state explosion: an engine with $N$ independent cognitive variables and $M$ interaction modalities requires $O(N \cdot M)$ explicit transition definitions \cite{nystrom2014game}. 
+
+When modeling continuous skill acquisition, cognitive scaffolding, and ethical alignment, discrete state machines fail to capture fine-grained learner trajectories. They lead to rigid conditional branching, brittle script dependencies, and high risk of dead-end loops or unreachable states. The system requires an irreducible mathematical foundation that scales linearly with conceptual dimensions, guarantees unique state factorizability, and provides continuous topological routing.
+
+\subsection{Decision Drivers}
+\begin{enumerate}[label=\bfseries D\arabic*.]
+    \item \textbf{Factorizability and Orthogonality:} Trajectories must factorize uniquely into fundamental atomic concepts without state overlap or representational ambiguity.
+    \item \textbf{Continuous State Tracking:} Support continuous-time evaluation of learner competence, engagement, and retention rather than coarse discrete transitions.
+    \item \textbf{Topological Consistency:} Dynamic curriculum adaptation must preserve global structural invariants across localized, modular learning patches.
+    \item \textbf{Computational Scalability:} State vector operations must execute with $O(|\Primes_{\text{active}}|)$ computational complexity, fitting within cache-aligned SIMD registers.
+\end{enumerate}
+
+\subsection{Considered Options}
+\begin{itemize}
+    \item \textbf{Option 1: Classical Hierarchical State Machines (HSMs).} Standard industry approach. Rejected due to combinatorial explosion when tracking multi-dimensional cognitive metrics simultaneously.
+    \item \textbf{Option 2: Probabilistic Bayesian Knowledge Tracing (BKT).} Effective for simple assessment, but lacks geometry, topological sheaf structures for narrative routing, and tensor field dynamics.
+    \item \textbf{Option 3: Prime-Indexed Hilbert Tensor Space with Sheaf Morphisms.} Grounded in Multiplicity Theory and the QARI Framework \cite{mourokh2024qari}. Provides mathematically provable unique factorization, continuous tensor dynamics, and open sheaf routing.
+\end{itemize}
+
+\subsection{Decision Outcome}
+We adopt \textbf{Option 3: Prime-Indexed Hilbert Tensor Space ($\Hilb$) with Sheaf Morphisms}.
+
+\subsubsection{Mathematical Formalization}
+The cognitive state vector of player $k$ at time $t$, denoted as $\PsiVec$, is defined over a Hilbert space $\Hilb$ spanned by orthogonal, prime-indexed basis states:
+\begin{equation}
+\label{eq:psi_state}
+\PsiVec = \sum_{p_i \in \Primes} \alpha_{p_i}(t) \ket{p_i}
+\end{equation}
+where $\Primes = \{2, 3, 5, 7, 11, 13, \dots\}$ represents the infinite set of prime numbers. Each basis state $\ket{p_i}$ represents an irreducible, cognitively atomic concept (e.g., $\ket{2} \equiv \text{Numerical Literacy}$, $\ket{3} \equiv \text{Spatial Reasoning}$, $\ket{5} \equiv \text{Causal Inference}$). The time-varying coefficients $\alpha_{p_i}(t) \in [0, 1] \subset \mathbb{R}$ quantify real-time mastery, engagement, and retention metrics.
+
+By the \textbf{Fundamental Theorem of Arithmetic}, any compound composite state $S_c$ with composite index $m \in \mathbb{N}$ has a unique canonical prime factorization:
+\begin{equation}
+m = \prod_{i=1}^{K} p_i^{e_i} \iff \ket{S_c} = \bigotimes_{i=1}^K \ket{p_i}^{\otimes e_i}
+\end{equation}
+This mathematical bijection guarantees that any arbitrary game narrative or multi-concept task can be factored uniquely into its atomic prerequisites without ambiguity.
+
+\subsubsection{Dynamic Recursive Operator}
+The continuous-time structural evolution of the game logic is governed by the Recursive Dynamic Operator $\XiOp$:
+\begin{equation}
+\label{eq:xi_operator}
+\XiOp = \Xi_0 + \sum_{n=1}^{\infty} \LambdaM^n \frac{\partial^n T_n}{\partial t^n}
+\end{equation}
+where $\Xi_0$ is the foundational baseline manifold, $\LambdaM \in (0, 1)$ is the Universal Multiplicity Constant governing adaptation rate, and $T_n$ are dynamic tensor layers encoding narrative layers, domain literacy, and ethical boundaries.
+
+\subsubsection{Open Curriculum Sheaf Dynamics}
+Curriculum structures $C_i(t)$ evolve according to open sheaf morphisms over a topological space $\mathcal{M}$:
+\begin{equation}
+C_i(t) = \int_0^t \Phi(C_i, \XiOp)\, dt
+\end{equation}
+where $\Phi$ defines sheaf restriction and extension maps ensuring that local learning scaffolds glue consistently into global curriculum invariants.
+
+\subsubsection{Ethical Field Tensor and Learning Manifold}
+Ethical boundaries are enforced by the Ethical Field Tensor $\EthicalTensor$ coupled to the Quantum-Learning Manifold metric $\MetricManifold$:
+\begin{align}
+\EthicalTensor &= \Sigma^\mu(t) \nabla^\nu \mathcal{L}_{\text{ethics}} \\
+\MetricManifold &= \LambdaM T_{\mu\nu}^{(k)} + \eta_{\mu\nu}(t)
+\end{align}
+where $\Sigma^\mu(t)$ is the narrative vector, $\mathcal{L}_{\text{ethics}}$ is the community-derived ethical Lagrangian, $T_{\mu\nu}^{(k)}$ is the cognitive stress-energy tensor, and $\eta_{\mu\nu}(t)$ captures localized adaptation perturbations.
+
+\begin{figure}[htbp]
+\centering
+\begin{tikzpicture}[scale=0.9, every node/.style={transform shape}]
+    % Basis states
+    \draw[thick, primaryblue, fill=primaryblue!10] (0,2) circle (0.8) node[align=center] {$\ket{2}$\\\tiny Counting};
+    \draw[thick, primaryblue, fill=primaryblue!10] (2.5,3.2) circle (0.8) node[align=center] {$\ket{3}$\\\tiny Spatial};
+    \draw[thick, primaryblue, fill=primaryblue!10] (2.5,0.8) circle (0.8) node[align=center] {$\ket{5}$\\\tiny Causal};
+    \draw[thick, primaryblue, fill=primaryblue!10] (5,2) circle (0.8) node[align=center] {$\ket{7}$\\\tiny Ethics};
+    
+    % Composite state
+    \draw[ultra thick, accentblue, fill=accentblue!15] (8.5,2) ellipse (1.6 and 1.2) node[align=center] {\textbf{Composite State}\\\large $\ket{210} = \ket{2 \cdot 3 \cdot 5 \cdot 7}$\\\footnotesize Unique Factorization};
+    
+    % Arrows
+    \draw[-{Stealth[length=3mm]}, thick, accentblue] (0.8,2) -- (6.8,2.2);
+    \draw[-{Stealth[length=3mm]}, thick, accentblue] (3.3,3.2) -- (6.9,2.4);
+    \draw[-{Stealth[length=3mm]}, thick, accentblue] (3.3,0.8) -- (6.9,1.6);
+    \draw[-{Stealth[length=3mm]}, thick, accentblue] (5.8,2) -- (6.9,2.0);
+    
+    \node at (4,-0.5) [align=center] {\textsf{\small Orthogonal Prime Basis Projection into Compound Cognitive Space}};
+\end{tikzpicture}
+\caption{Prime-Indexed Basis Tensor Projection and Unique Factorization Decomposition.}
+\label{fig:prime_projection}
+\end{figure}
+
+\subsection{Rust Data Structure Implementation}
+To guarantee zero-cost abstraction and cache locality, the continuous state vector is represented as a contiguous, cache-aligned sparse array:
+
+\begin{lstlisting}[language=Rust, caption={Cache-Aligned Prime State Vector in Rust}]
+#[repr(align(64))]
+#[derive(Clone, Debug)]
+pub struct PrimeStateVector {
+    /// Active prime indices (e.g., 2, 3, 5, 7, 11, ...)
+    pub primes: [u32; MAX_ACTIVE_PRIMES],
+    /// Amplitudes alpha_{p_i}(t) normalized in [0.0, 1.0]
+    pub amplitudes: [f32; MAX_ACTIVE_PRIMES],
+    /// Active dimension count
+    pub active_count: usize,
+    /// Timestamp of last tensor contraction
+    pub timestamp_ns: u64,
+}
+
+impl PrimeStateVector {
+    #[inline(always)]
+    pub fn inner_product(&self, other: &Self) -> f32 {
+        // SIMD accelerated inner product over orthogonal prime basis
+        let mut sum = 0.0f32;
+        for i in 0..self.active_count {
+            if self.primes[i] == other.primes[i] {
+                sum += self.amplitudes[i] * other.amplitudes[i];
+            }
+        }
+        sum
+    }
+}
+\end{lstlisting}
+
+\subsection{Consequences}
+\subsubsection{Positive}
+\begin{itemize}
+    \item \textbf{No State Collision:} Unique prime factorizability guarantees that no two disparate learning paths map to the same composite node.
+    \item \textbf{Linear Dimensionality:} Adding a new cognitive concept requires adding an orthogonal prime index, avoiding $O(N \cdot M)$ combinatorial matrix expansion.
+    \item \textbf{Mathematical Scaffolding:} Cognitive deficiencies immediately identify missing prime factors, enabling exact skip-logic routing.
+\end{itemize}
+
+\subsubsection{Negative and Mitigations}
+\begin{itemize}
+    \item \textbf{Sparse Basis Overhead:} An infinite prime set requires truncation. \textbf{Mitigation:} Restrict runtime active basis to prime indices $p_i \le p_{256}$, satisfying all operational curriculum requirements within fixed-size SIMD buffers.
+\end{itemize}

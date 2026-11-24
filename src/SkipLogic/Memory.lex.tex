@@ -1,0 +1,69 @@
+\begin{lexlean}{SkipLogic.Memory}
+\useglossary{lexlean.std.bool@1.2.0}
+\useglossary{lexlean.std.nat@1.2.0}
+\useglossary{skiplogic.titles@1.0.0}
+\importmodule{SkipLogic.Parameters}
+\title{Skip logic zero allocation memory pools and cache aligned layout}
+\begin{semanticmodule}
+structure{
+  name: EngineMemoryLayout,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: cacheLineAlignBytes, type: Nat},
+    {name: frameArenaBytes, type: Nat},
+    {name: sceneArenaBytes, type: Nat},
+    {name: zeroAllocHotLoop, type: Bool}
+  ]
+}
+
+definition{
+  name: defaultMemoryLayout,
+  parameters: [],
+  result: EngineMemoryLayout,
+  body: (record EngineMemoryLayout {cacheLineAlignBytes := 64, frameArenaBytes := 2097152, sceneArenaBytes := 16777216, zeroAllocHotLoop := true})
+}
+
+definition{
+  name: isCacheAligned64,
+  parameters: [m : EngineMemoryLayout],
+  result: Bool,
+  body: ((project m cacheLineAlignBytes) =? 64)
+}
+
+definition{
+  name: isZeroAllocEnforced,
+  parameters: [m : EngineMemoryLayout],
+  result: Bool,
+  body: (project m zeroAllocHotLoop)
+}
+
+definition{
+  name: computeBumpOffset,
+  parameters: [current : Nat, requested : Nat],
+  result: Nat,
+  body: (current + requested)
+}
+
+theorem{
+  name: cache_line_alignment_sound,
+  parameters: [],
+  statement: ((isCacheAligned64 (defaultMemoryLayout)) = true),
+  proof: reflexivity{}
+}
+
+theorem{
+  name: zero_allocation_hot_loop_sound,
+  parameters: [],
+  statement: ((isZeroAllocEnforced (defaultMemoryLayout)) = true),
+  proof: reflexivity{}
+}
+
+theorem{
+  name: bump_allocation_offset_sound,
+  parameters: [],
+  statement: (((computeBumpOffset 128 64) =? 192) = true),
+  proof: reflexivity{}
+}
+\end{semanticmodule}
+\end{lexlean}

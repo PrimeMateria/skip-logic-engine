@@ -1,0 +1,16 @@
+spec = "lexlean/entry/1"
+id = "skiplogic-subsystems"
+category = "label-word"
+surface_arity = 0
+frame = "atom"
+
+[denotation]
+kind = "defined"
+value = "(const lexlean.std.nat::nat)"
+
+[[form]]
+id = "skiplogic-subsystems"
+channel = "text"
+surface = "Skip logic decoupled subsystems and atomic state snapshotting"
+canonical_source = true
+features = ["sentence-case", "singular"]

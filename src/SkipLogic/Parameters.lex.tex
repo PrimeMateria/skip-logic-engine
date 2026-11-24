@@ -1,0 +1,90 @@
+\begin{lexlean}{SkipLogic.Parameters}
+\useglossary{lexlean.std.bool@1.2.0}
+\useglossary{lexlean.std.nat@1.2.0}
+\useglossary{skiplogic.titles@1.0.0}
+\title{Skip logic system parameters and operational constants}
+\begin{semanticmodule}
+structure{
+  name: SkipLogicEngineParameters,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: universalMultiplicityScaled, type: Nat},
+    {name: fixedTimestepUs, type: Nat},
+    {name: maxActivePrimes, type: Nat},
+    {name: frameArenaCapacityBytes, type: Nat},
+    {name: cacheLineAlignmentBytes, type: Nat},
+    {name: targetFrameFps, type: Nat},
+    {name: rlgStallThresholdScaled, type: Nat},
+    {name: efcMinBoundScaled, type: Nat},
+    {name: efcMaxBoundScaled, type: Nat}
+  ]
+}
+
+definition{
+  name: defaultEngineParams,
+  parameters: [],
+  result: SkipLogicEngineParameters,
+  body: (record SkipLogicEngineParameters {universalMultiplicityScaled := 729, fixedTimestepUs := 16666, maxActivePrimes := 64, frameArenaCapacityBytes := 2097152, cacheLineAlignmentBytes := 64, targetFrameFps := 60, rlgStallThresholdScaled := 500, efcMinBoundScaled := 800, efcMaxBoundScaled := 1200}),
+  axioms: [],
+  executable: true,
+  production: {effects: [allocation], targets: [rust-std]}
+}
+
+definition{
+  name: highPerformanceEngineParams,
+  parameters: [],
+  result: SkipLogicEngineParameters,
+  body: (record SkipLogicEngineParameters {universalMultiplicityScaled := 850, fixedTimestepUs := 8333, maxActivePrimes := 64, frameArenaCapacityBytes := 4194304, cacheLineAlignmentBytes := 64, targetFrameFps := 120, rlgStallThresholdScaled := 400, efcMinBoundScaled := 850, efcMaxBoundScaled := 1150})
+}
+
+definition{
+  name: isTiming60Fps,
+  parameters: [p : SkipLogicEngineParameters],
+  result: Bool,
+  body: (((project p fixedTimestepUs) =? 16666) && ((project p targetFrameFps) =? 60))
+}
+
+definition{
+  name: isAlignmentValid,
+  parameters: [p : SkipLogicEngineParameters],
+  result: Bool,
+  body: ((project p cacheLineAlignmentBytes) =? 64)
+}
+
+definition{
+  name: isCapacitySufficient,
+  parameters: [p : SkipLogicEngineParameters],
+  result: Bool,
+  body: (1048576 <=? (project p frameArenaCapacityBytes))
+}
+
+theorem{
+  name: default_params_timing_stable,
+  parameters: [],
+  statement: ((isTiming60Fps (defaultEngineParams)) = true),
+  proof: reflexivity{}
+}
+
+theorem{
+  name: default_alignment_valid,
+  parameters: [],
+  statement: ((isAlignmentValid (defaultEngineParams)) = true),
+  proof: reflexivity{}
+}
+
+theorem{
+  name: default_capacity_sufficient,
+  parameters: [],
+  statement: ((isCapacitySufficient (defaultEngineParams)) = true),
+  proof: reflexivity{}
+}
+
+theorem{
+  name: high_performance_alignment_valid,
+  parameters: [],
+  statement: ((isAlignmentValid (highPerformanceEngineParams)) = true),
+  proof: reflexivity{}
+}
+\end{semanticmodule}
+\end{lexlean}

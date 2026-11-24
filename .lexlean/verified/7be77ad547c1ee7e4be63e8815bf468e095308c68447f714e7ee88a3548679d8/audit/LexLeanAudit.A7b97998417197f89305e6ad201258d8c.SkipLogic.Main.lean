@@ -1,0 +1,12 @@
+module
+import SkipLogic.Main
+#print axioms SkipLogic.Main.skiplogic_cicd_test_harness_sound
+#print axioms SkipLogic.Main.skiplogic_compilation_pipeline_sound
+#print axioms SkipLogic.Main.skiplogic_end_to_end_engine_certified
+#print axioms SkipLogic.Main.skiplogic_formal_verification_matrix_sound
+#print axioms SkipLogic.Main.skiplogic_memory_zero_allocation_sound
+#print axioms SkipLogic.Main.skiplogic_prime_state_space_sound
+#print axioms SkipLogic.Main.skiplogic_scaffolding_convergence_sound
+#print axioms SkipLogic.Main.skiplogic_subsystem_view_decoupling_sound
+#print axioms SkipLogic.Main.skiplogic_task_graph_concurrency_sound
+#print axioms SkipLogic.Main.skiplogic_telemetry_rlg_efc_sound

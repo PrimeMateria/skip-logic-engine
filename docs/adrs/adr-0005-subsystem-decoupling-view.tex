@@ -1,0 +1,142 @@
+\section{ADR-0005: Decoupled Subsystem Architecture and Read-Only State Snapshotting}
+\label{sec:adr0005}
+
+\begin{adrbox}{ADR-0005: Subsystem Decoupling and State Snapshotting}{Status: \statusbadge{ACCEPTED}}
+\textbf{Date:} 2026-11-23 \\
+\textbf{Context:} Separation of concerns across gameplay logic, rendering, audio, and platform I/O. \\
+\textbf{Deciders:} Core Engine Working Group, Systems Architecture Team \\
+\textbf{Status:} Accepted / Production Target
+\end{adrbox}
+
+\subsection{Context and Problem Statement}
+In monolithic or tightly coupled game engines, visual rendering code and asset I/O are interwoven with core state logic \cite{gregory2018game, sydra2023engine}. This coupling introduces significant vulnerabilities: rendering stalls degrade game physics, graphics API dependencies complicate headless automated testing, and multi-threaded data mutations create data race conditions between render frames and logic ticks \cite{gregory2018game, nystrom2014game}.
+
+The Skip-Logic Game Engine requires complete structural decoupling between mathematical state progression, platform hardware abstraction, rendering views, and asynchronous asset streaming.
+
+\subsection{Decision Drivers}
+\begin{enumerate}[label=\bfseries D\arabic*.]
+    \item \textbf{Total Decoupling of Logic and View:} The View/Render engine must have zero write access to state progression.
+    \item \textbf{Platform Independence:} Isolate OS-specific platform calls behind a uniform Platform Abstraction Layer (PLA).
+    \item \textbf{Asynchronous Resource Streaming:} Assets and interactive simulation packages (e.g., PhET physics/math modules) must stream asynchronously without hitching the logic frame.
+    \item \textbf{Headless Execution:} Support pure headless CLI execution for CI/CD, mathematical fuzzing, and cloud-based analytics.
+\end{enumerate}
+
+\subsection{Decision Outcome}
+We establish an immutable **Quad-Layer Architectural Subsystem Separation** paired with an atomic **Read-Only State Snapshotting** protocol.
+
+\begin{table}[htbp]
+\centering
+\small
+\begin{tabularx}{\textwidth}{l p{4.2cm} p{3.8cm} X}
+\toprule
+\textbf{Engine Layer} & \textbf{Core Responsibilities} & \textbf{Implementation} & \textbf{Primary Data Artifacts} \\
+\midrule
+\textbf{Logic \& State Engine} & Manages dynamic skip-logic state transitions, Hilbert space updates, and metric integration & Lexlean declarative code compiled via PrismPM to Rust & State Vector $\PsiVec$, Dynamic Operator $\XiOp$, Task DAGs \\
+\addlinespace
+\textbf{Platform Layer (PLA)} & Low-level OS abstractions, hardware threads, file I/O, windowing, and clock timers & Native Rust cross-platform HAL modules & Platform events, thread pools, raw OS file descriptors \\
+\addlinespace
+\textbf{View \& Render Engine} & Read-only querying of state frames to drive GPU scene rendering, audio, and UI & Vulkan / wgpu / WebGPU rendering pipelines & Renderable scene graph, audio buffers, UI overlays \\
+\addlinespace
+\textbf{Resource Subsystem} & Asynchronous streaming, decompression, and caching of asset bundles & Rust async/await background streaming pipeline & Resource handles, cached textures, PhET modules \\
+\bottomrule
+\end{tabularx}
+\caption{Quad-Layer Subsystem Responsibilities and Technologies.}
+\label{tab:subsystem_matrix}
+\end{table}
+
+\subsubsection{Read-Only State Snapshotting Mechanism}
+Communication between the Logic Engine and the View Engine utilizes a triple-buffered, lock-free state publication pattern:
+\begin{enumerate}
+    \item The Logic Engine writes the new frame state into an internal back buffer $\mathcal{S}_{\text{back}}$.
+    \item Upon completing all task graph nodes for frame $N$, the Logic Engine atomically publishes $\mathcal{S}_{\text{back}}$ by swapping an atomic pointer `AtomicPtr<ImmutableStateFrame>`.
+    \item The View Engine samples the latest published pointer at its own independent refresh rate (e.g., 144Hz display sync while logic updates at 60Hz), holding a read-only reference without ever stalling the logic pipeline.
+\end{enumerate}
+
+\begin{figure}[htbp]
+\centering
+\begin{tikzpicture}[node distance=2.2cm, auto, >=Stealth]
+    % Boxes
+    \node [draw, thick, rectangle, fill=primaryblue!10, text width=4.5cm, align=center, rounded corners] (logic) {
+        \textbf{Logic \& State Engine}\\
+        \footnotesize 60Hz Simulation Tick\\
+        Writes $\mathcal{S}_{\text{back}}$ in private arena
+    };
+    
+    \node [draw, ultra thick, dashed, rectangle, fill=accentblue!10, text width=3.5cm, align=center, rounded corners, right=1.5cm of logic] (atomic_pub) {
+        \textbf{Atomic Snapshot}\\
+        \texttt{AtomicPtr<StateFrame>}\\
+        Lock-free swap
+    };
+    
+    \node [draw, thick, rectangle, fill=statusaccepted!10, text width=4.5cm, align=center, rounded corners, right=1.5cm of atomic_pub] (view) {
+        \textbf{View / Render Engine}\\
+        \footnotesize Variable Refresh (60--144Hz)\\
+        Read-Only consumer of $\mathcal{S}_{\text{pub}}$
+    };
+    
+    \node [draw, thick, rectangle, fill=statusproposed!10, text width=11.5cm, align=center, rounded corners, below=1.2cm of atomic_pub] (resource) {
+        \textbf{Resource \& Simulation Subsystem (Async PhET Pipeline)}\\
+        \footnotesize Background asset streaming $\bullet$ Thread-safe decompression $\bullet$ Zero-copy GPU uploads
+    };
+
+    % Arrows
+    \draw [->, ultra thick, primaryblue] (logic) -- node[above, font=\footnotesize] {Atomic Publish} (atomic_pub);
+    \draw [->, ultra thick, statusaccepted] (atomic_pub) -- node[above, font=\footnotesize] {Read-Only Sample} (view);
+    \draw [->, thick, dashed] (resource) -- (logic);
+    \draw [->, thick, dashed] (resource) -- (view);
+\end{tikzpicture}
+\caption{Decoupled Triple-Buffer State Frame Publication Architecture.}
+\label{fig:view_decoupling}
+\end{figure}
+
+\subsection{Rust Snapshot Publication Interface}
+
+\begin{lstlisting}[language=Rust, caption={Triple-Buffered State Frame Snapshot Publisher}]
+use std::sync::atomic::{AtomicPtr, Ordering};
+
+pub struct ImmutableStateFrame {
+    pub frame_index: u64,
+    pub timestamp_ns: u64,
+    pub player_state: PrimeStateVector,
+    pub dynamic_operator_norm: f32,
+    pub rlg_metric: f32,
+    pub efc_metric: f32,
+    pub active_sheaf_id: u32,
+}
+
+pub struct StateSnapshotPublisher {
+    buffers: [Box<ImmutableStateFrame>; 3],
+    published_ptr: AtomicPtr<ImmutableStateFrame>,
+    write_index: usize,
+}
+
+impl StateSnapshotPublisher {
+    pub fn publish(&mut self) {
+        let ptr = Box::into_raw(self.buffers[self.write_index].clone());
+        let old_ptr = self.published_ptr.swap(ptr, Ordering::AcqRel);
+        if !old_ptr.is_null() {
+            unsafe { drop(Box::from_raw(old_ptr)); }
+        }
+        self.write_index = (self.write_index + 1) % 3;
+    }
+
+    #[inline(always)]
+    pub fn read_current(&self) -> &ImmutableStateFrame {
+        let ptr = self.published_ptr.load(Ordering::Acquire);
+        unsafe { &*ptr }
+    }
+}
+\end{lstlisting}
+
+\subsection{Consequences}
+\subsubsection{Positive}
+\begin{itemize}
+    \item \textbf{Total Visual Isolation:} Heavy render passes or GPU fence waits cannot block state calculation or skip-logic routing.
+    \item \textbf{High-Velocity Testing:} Engine logic tests can execute thousands of frames per second in headless mode without initializing graphics devices.
+    \item \textbf{Thread Safety Invariants:} Enforced at the compiler level via Rust's immutable referencing guarantees.
+\end{itemize}
+
+\subsubsection{Negative and Mitigations}
+\begin{itemize}
+    \item \textbf{One-Frame Display Latency:} Triple buffering introduces a maximum of one frame display latency ($\sim 16.6\text{ms}$ at 60Hz). \textbf{Mitigation:} Standard game industry trade-off, fully compensated by render-layer extrapolation when required.
+\end{itemize}

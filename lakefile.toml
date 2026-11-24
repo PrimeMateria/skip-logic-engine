@@ -1,0 +1,6 @@
+name = "skiplogic_lexlean_host"
+version = "0.1.0"
+defaultTargets = ["SkipLogicHost"]
+
+[[lean_lib]]
+name = "SkipLogicHost"

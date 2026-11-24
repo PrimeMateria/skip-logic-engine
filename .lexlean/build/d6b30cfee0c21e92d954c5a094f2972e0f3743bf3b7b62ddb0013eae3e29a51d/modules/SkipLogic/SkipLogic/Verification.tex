@@ -1,0 +1,35 @@
+\documentclass[11pt]{article}
+\usepackage[T1]{fontenc}
+\usepackage{amsmath,amssymb}
+\begin{document}
+\section*{Semantic declarations}
+\subsection*{\texttt{FormalVerificationSuiteGate}}
+\noindent Kind: \texttt{structure}.\par
+\noindent Field \texttt{leanKernelProofsCount}: \texttt{Nat}.\par
+\noindent Field \texttt{compilerFuzzingCasesCount}: \texttt{Nat}.\par
+\noindent Field \texttt{maxDispatchLatencyNs}: \texttt{Nat}.\par
+\noindent Field \texttt{zeroMiriUndefinedBehavior}: \texttt{Bool}.\par
+\subsection*{\texttt{productionVerificationGate}}
+\noindent Kind: \texttt{definition}.\par
+\noindent Type: \texttt{FormalVerificationSuiteGate}.\par
+\noindent Definition: \texttt{(\{ leanKernelProofsCount := 36, compilerFuzzingCasesCount := 10000, maxDispatchLatencyNs := 500, zeroMiriUndefinedBehavior := true \} : FormalVerificationSuiteGate)}.\par
+\noindent Axiom policy: \texttt{none}.\par
+\subsection*{\texttt{isGateSatisfied}}
+\noindent Kind: \texttt{definition}.\par
+\noindent Parameters: \texttt{(g : FormalVerificationSuiteGate)}.\par
+\noindent Type: \texttt{Bool}.\par
+\noindent Definition: \texttt{(((Nat.ble (30) ((g).leanKernelProofsCount)) \&\& (Nat.ble ((g).maxDispatchLatencyNs) (1000))) \&\& (g).zeroMiriUndefinedBehavior)}.\par
+\noindent Axiom policy: \texttt{none}.\par
+\subsection*{\texttt{production\_gate\_satisfied\_sound}}
+\noindent Kind: \texttt{theorem}.\par
+\noindent Statement: \texttt{(isGateSatisfied (productionVerificationGate) = true)}.\par
+\noindent Axiom policy: \texttt{none}.\par
+\subsection*{\texttt{dispatch\_latency\_within\_budget}}
+\noindent Kind: \texttt{theorem}.\par
+\noindent Statement: \texttt{((Nat.ble ((productionVerificationGate).maxDispatchLatencyNs) (500)) = true)}.\par
+\noindent Axiom policy: \texttt{none}.\par
+\subsection*{\texttt{miri\_clean\_sound}}
+\noindent Kind: \texttt{theorem}.\par
+\noindent Statement: \texttt{((productionVerificationGate).zeroMiriUndefinedBehavior = true)}.\par
+\noindent Axiom policy: \texttt{none}.\par
+\end{document}

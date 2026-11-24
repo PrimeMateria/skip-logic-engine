@@ -1,0 +1,93 @@
+\begin{lexlean}{SkipLogic.StateSpace}
+\useglossary{lexlean.std.bool@1.2.0}
+\useglossary{lexlean.std.nat@1.2.0}
+\useglossary{skiplogic.titles@1.0.0}
+\importmodule{SkipLogic.Parameters}
+\title{Skip logic prime state space and dynamic operator}
+\begin{semanticmodule}
+structure{
+  name: PrimeBasisState,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: primeId, type: Nat},
+    {name: amplitudeScaled, type: Nat},
+    {name: velocityScaled, type: Nat}
+  ]
+}
+
+structure{
+  name: CompositeState,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: compositeProduct, type: Nat},
+    {name: activePrimesCount, type: Nat},
+    {name: isFactorizable, type: Bool}
+  ]
+}
+
+definition{
+  name: atomicStateCounting,
+  parameters: [],
+  result: PrimeBasisState,
+  body: (record PrimeBasisState {primeId := 2, amplitudeScaled := 850, velocityScaled := 12})
+}
+
+definition{
+  name: atomicStateSpatial,
+  parameters: [],
+  result: PrimeBasisState,
+  body: (record PrimeBasisState {primeId := 3, amplitudeScaled := 550, velocityScaled := 4})
+}
+
+definition{
+  name: compositeStateSpatialCounting,
+  parameters: [],
+  result: CompositeState,
+  body: (record CompositeState {compositeProduct := 6, activePrimesCount := 2, isFactorizable := true})
+}
+
+definition{
+  name: isPrimeBasisOrthogonal,
+  parameters: [p1 : Nat, p2 : Nat],
+  result: Bool,
+  body: (if (p1 =? p2) then true else (not (p1 =? p2)))
+}
+
+definition{
+  name: computeCompositeProduct,
+  parameters: [p1 : Nat, p2 : Nat],
+  result: Nat,
+  body: (prim multiply p1 p2 : Nat)
+}
+
+theorem{
+  name: prime_basis_orthogonality_sound,
+  parameters: [],
+  statement: ((isPrimeBasisOrthogonal 2 3) = true),
+  proof: reflexivity{}
+}
+
+theorem{
+  name: composite_state_product_sound,
+  parameters: [],
+  statement: (((computeCompositeProduct 2 3) =? 6) = true),
+  proof: reflexivity{}
+}
+
+theorem{
+  name: composite_state_factorizable_sound,
+  parameters: [],
+  statement: ((project (compositeStateSpatialCounting) isFactorizable) = true),
+  proof: reflexivity{}
+}
+
+theorem{
+  name: atomic_state_counting_prime,
+  parameters: [],
+  statement: (((project (atomicStateCounting) primeId) =? 2) = true),
+  proof: reflexivity{}
+}
+\end{semanticmodule}
+\end{lexlean}

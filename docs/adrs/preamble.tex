@@ -1,0 +1,130 @@
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage[margin=1in]{geometry}
+\usepackage{amsmath,amssymb,amsthm,mathtools,bm,physics}
+\usepackage{booktabs,tabularx,array,longtable}
+\usepackage{microtype}
+\usepackage{hyperref}
+\usepackage{cleveref}
+\usepackage{listings}
+\usepackage{xcolor}
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta,positioning,shapes.geometric,calc,decorations.pathreplacing}
+\usepackage[most]{tcolorbox}
+\usepackage{enumitem}
+\usepackage{fancyhdr}
+\usepackage{titlesec}
+
+% Colors
+\definecolor{primaryblue}{RGB}{20, 50, 95}
+\definecolor{accentblue}{RGB}{41, 128, 185}
+\definecolor{statusaccepted}{RGB}{39, 174, 96}
+\definecolor{statusproposed}{RGB}{243, 156, 18}
+\definecolor{statusdeprecated}{RGB}{192, 57, 43}
+\definecolor{codebg}{RGB}{248, 249, 250}
+\definecolor{codeframe}{RGB}{220, 224, 230}
+\definecolor{rustkeyword}{RGB}{0, 90, 160}
+\definecolor{ruststring}{RGB}{160, 40, 40}
+\definecolor{rustcomment}{RGB}{100, 110, 120}
+
+% Hyperref setup
+\hypersetup{
+    colorlinks=true,
+    linkcolor=accentblue,
+    citecolor=primaryblue,
+    urlcolor=accentblue,
+    pdfauthor={PrismAGI Architectural Team},
+    pdftitle={Skip-Logic Game Engine - Production Architecture Decision Records}
+}
+
+% Header/Footer
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{\textsf{\footnotesize Skip-Logic Game Engine ADR Suite}}
+\fancyhead[R]{\textsf{\footnotesize \leftmark}}
+\fancyfoot[C]{\textsf{\thepage}}
+\renewcommand{\headrulewidth}{0.4pt}
+\renewcommand{\footrulewidth}{0.4pt}
+
+% Code Listing Configuration
+\lstdefinelanguage{Rust}{
+    keywords={as, break, const, continue, crate, else, enum, extern, false, fn, for, if, impl, in, let, loop, match, mod, move, mut, pub, ref, return, self, Self, static, struct, super, trait, true, type, unsafe, use, where, while, async, await, dyn},
+    keywordstyle=\color{rustkeyword}\bfseries,
+    ndkeywords={u8, u16, u32, u64, u128, usize, i8, i16, i32, i64, i128, isize, f32, f64, bool, char, str, String, Vec, Option, Result, Some, None, Ok, Err, Box, Arc, Rc, AtomicU32, AtomicBool, AtomicPtr},
+    ndkeywordstyle=\color{primaryblue}\bfseries,
+    sensitive=true,
+    comment=[l]{//},
+    morecomment=[s]{/*}{*/},
+    commentstyle=\color{rustcomment}\itshape,
+    stringstyle=\color{ruststring},
+    morestring=[b]",
+    morestring=[b]'
+}
+
+\lstdefinelanguage{Lexlean}{
+    keywords={domain, prime_basis, state_space, sheaf, dynamic_operator, entry_criteria, exit_criteria, morphism, tensor_layer, ethics_lagrangian, manifold, integrate, skip_logic, route, converge},
+    keywordstyle=\color{primaryblue}\bfseries,
+    ndkeywords={Prime, HilbertSpace, Tensor, OpenCover, ContinuousTrace, SheafMorphism},
+    ndkeywordstyle=\color{accentblue}\bfseries,
+    sensitive=true,
+    comment=[l]{--},
+    morecomment=[s]{/-}{-/},
+    commentstyle=\color{rustcomment}\itshape,
+    stringstyle=\color{ruststring},
+    morestring=[b]"
+}
+
+\lstset{
+    basicstyle=\ttfamily\footnotesize,
+    backgroundcolor=\color{codebg},
+    frame=single,
+    rulecolor=\color{codeframe},
+    breaklines=true,
+    showstringspaces=false,
+    tabsize=4,
+    numbers=left,
+    numberstyle=\tiny\color{gray},
+    numbersep=8pt,
+    captionpos=b,
+    xleftmargin=15pt,
+    framexleftmargin=15pt
+}
+
+% ADR Box Environment
+\newtcolorbox{adrbox}[3][]{
+    enhanced,
+    colback=white,
+    colframe=primaryblue,
+    fonttitle=\bfseries\sffamily,
+    title={#2 \hfill \textsf{\small #3}},
+    coltitle=white,
+    boxrule=1.2pt,
+    arc=3pt,
+    drop shadow=black!10!white,
+    #1
+}
+
+% Status Badges
+\newcommand{\statusbadge}[1]{%
+    \tcbox[on line,boxsep=1pt,left=4pt,right=4pt,top=2pt,bottom=2pt,
+           colback=statusaccepted!15!white,colframe=statusaccepted,
+           boxrule=0.8pt,arc=2pt]{\sffamily\bfseries\scriptsize\color{statusaccepted}#1}%
+}
+
+\newcommand{\proposedbadge}[1]{%
+    \tcbox[on line,boxsep=1pt,left=4pt,right=4pt,top=2pt,bottom=2pt,
+           colback=statusproposed!15!white,colframe=statusproposed,
+           boxrule=0.8pt,arc=2pt]{\sffamily\bfseries\scriptsize\color{statusproposed}#1}%
+}
+
+% Mathematical Notation Macros
+\newcommand{\Hilb}{\mathcal{H}_{\mathcal{P}}}
+\newcommand{\Primes}{\mathcal{P}}
+\newcommand{\PsiVec}{\Psi_k(t)}
+\newcommand{\XiOp}{\Xi(t)}
+\newcommand{\LambdaM}{\Lambda_m}
+\newcommand{\EthicalTensor}{E^{\mu\nu}(t)}
+\newcommand{\MetricManifold}{g_{\mu\nu}(\mathcal{M}_k)}
+\newcommand{\RLG}{\mathrm{RLG}}
+\newcommand{\EFC}{\mathrm{EFC}}

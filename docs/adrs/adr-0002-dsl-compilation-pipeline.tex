@@ -1,0 +1,109 @@
+\section{ADR-0002: Three-Tier Compilation Pipeline: Lexlean to PrismPM to Native Rust}
+\label{sec:adr0002}
+
+\begin{adrbox}{ADR-0002: Three-Tier Compilation Pipeline}{Status: \statusbadge{ACCEPTED}}
+\textbf{Date:} 2026-11-23 \\
+\textbf{Context:} Separation of high-level declarative state specification from low-latency systems execution. \\
+\textbf{Deciders:} Language Engineering Team, Compiler Architecture Group \\
+\textbf{Status:} Accepted / Production Target
+\end{adrbox}
+
+\subsection{Context and Problem Statement}
+Expressing continuous tensor fields, sheaf transitions, and prime-indexed constraints directly in imperative Rust leads to bloated boilerplate, obscured narrative intent, and high risk of subtle mathematical errors \cite{gregory2018game}. Conversely, executing dynamic skip-logic via runtime interpreted scripting engines (e.g., Lua, Python) introduces non-deterministic garbage collection pauses, pointer chasing, and unacceptable frame-time jitter \cite{nystrom2014game}.
+
+A domain-specific compilation pipeline is required to allow designers to author state spaces declaratively while compiling down to zero-cost, memory-safe, statically verified native Rust execution modules.
+
+\subsection{Decision Drivers}
+\begin{enumerate}[label=\bfseries D\arabic*.]
+    \item \textbf{Domain Expressiveness:} Provide cognitive modelers with first-class primitives for prime bases, sheaf morphisms, and dynamic operator fields.
+    \item \textbf{Compile-Time Verification:} Perform topological verification and static dead-branch elimination prior to runtime compilation.
+    \item \textbf{Zero Runtime Interpretation Overhead:} Emitted artifacts must be 100\% pure native Rust with zero interpreter overhead.
+    \item \textbf{Seamless Toolchain Integration:} Integrate with the existing PrismPM build manager and cargo toolchain.
+\end{enumerate}
+
+\subsection{Decision Outcome}
+We establish a \textbf{Three-Tier Compilation Pipeline}:
+\begin{enumerate}
+    \item \textbf{Authoring Tier (Lexlean):} Declarative domain-specific language modeling prime state spaces, boundary conditions, and sheaf topologies.
+    \item \textbf{Intermediate Translation Tier (PrismPM):} AST lowering, static topological verification, matrix dimension contraction, dead-branch pruning, and memory-safe Rust source code generation.
+    \item \textbf{Runtime Execution Tier (Native Rust):} Highly optimized, cache-aligned execution target compiled with `rustc` (LTO, SIMD vectorization).
+\end{enumerate}
+
+\begin{figure}[htbp]
+\centering
+\begin{tikzpicture}[node distance=1.8cm, auto, >=Stealth]
+    % Nodes
+    \node [draw, thick, rectangle, fill=primaryblue!10, text width=3.8cm, align=center, rounded corners] (lexlean) {
+        \textbf{Tier 1: Lexlean DSL}\\
+        \footnotesize Declarative State Spaces, Sheaves, Primes, Entry/Exit Predicates
+    };
+    \node [draw, thick, rectangle, fill=accentblue!15, text width=4.5cm, align=center, rounded corners, below=of lexlean] (prismpm) {
+        \textbf{Tier 2: PrismPM Toolchain}\\
+        \footnotesize $\bullet$ AST Parsing \& Schema Check\\
+        $\bullet$ Topological Invariant Verifier\\
+        $\bullet$ Dead-Branch Pruning\\
+        $\bullet$ Matrix Lowering to SIMD\\
+        $\bullet$ Rust Source Synthesizer
+    };
+    \node [draw, thick, rectangle, fill=statusaccepted!15, text width=4.0cm, align=center, rounded corners, below=of prismpm] (rust) {
+        \textbf{Tier 3: Native Rust Engine}\\
+        \footnotesize Zero-Allocation Task Graphs, Cache-Aligned Structs, LTO Native Binary
+    };
+
+    % Paths
+    \draw [->, ultra thick, primaryblue] (lexlean) -- node[right, font=\footnotesize] {Lexlean AST} (prismpm);
+    \draw [->, ultra thick, accentblue] (prismpm) -- node[right, font=\footnotesize] {Emitted Rust Modules} (rust);
+\end{tikzpicture}
+\caption{The Three-Tier Compilation Pipeline from Declarative Lexlean to Native Rust.}
+\label{fig:compilation_pipeline}
+\end{figure}
+
+\subsection{Lexlean Language Specification Snippet}
+The Lexlean DSL provides concise mathematical constructs:
+
+\begin{lstlisting}[language=Lexlean, caption={Lexlean Domain Declaration for Skip-Logic State Engine}]
+domain SpatialReasoningEngine {
+    prime_basis {
+        2: "ElementarySpatialOrientation",
+        3: "VectorDisplacementCalculus",
+        5: "TensorFieldProjection",
+        7: "TopologicalInvariance"
+    }
+
+    dynamic_operator Xi {
+        universal_multiplicity: 0.729,
+        tensor_layers: [Kinematics, Dynamics, EthicsAlignment],
+        derivative_order: 2
+    }
+
+    sheaf_morphism AdaptiveScaffold {
+        source: PrimeNode(3),
+        target: PrimeNode(5),
+        entry_criteria: alpha(2) >= 0.85 and alpha(3) < 0.60,
+        exit_criteria: alpha(3) >= 0.90,
+        scaffold_module: "phet_simulations/vector_addition"
+    }
+}
+\end{lstlisting}
+
+\subsection{PrismPM Compilation Passes}
+\begin{enumerate}
+    \item \textbf{Syntactic \& Type Lowering:} Converts Lexlean source tokens into typed AST representations.
+    \item \textbf{Topological Sheaf Verification:} Constructs a directed graph of all sheaf morphisms and proves that every skip-logic diversion contains a topologically convergent path back to the global invariant manifold (preventing structural orphan cycles).
+    \item \textbf{Dead-Branch Elimination:} Traverses state reachability from initial state $\Psi(0)$; strips unreachable prime tensor products.
+    \item \textbf{Matrix Lowering:} Transforms continuous tensor derivatives into discrete fixed-size matrix update kernels targeting AVX2 / AVX-512 vector lanes.
+    \item \textbf{Rust Code Emission:} Generates idiomatic, `no_std`-compatible Rust modules implementing static dispatch traits.
+\end{enumerate}
+
+\subsection{Consequences}
+\subsubsection{Positive}
+\begin{itemize}
+    \item \textbf{Complete Safety Isolation:} Cognitive architects cannot introduce memory corruption, data races, or thread deadlocks in Lexlean.
+    \item \textbf{Compile-Time Verification:} Structural errors, cyclic state traps, and missing prerequisites are caught before compiling Rust binaries.
+    \item \textbf{Optimal Throughput:} Eliminates runtime script interpretation, delivering sub-microsecond state evaluation.
+\end{itemize}
+
+\subsubsection{Negative and Mitigations}
+\begin{itemize}
+    \item \textbf{Build Step Overhead:} Requires invoking the PrismPM precompiler. \textbf{Mitigation:} Integrate incremental caching into `cargo build` build scripts (`build.rs`).
+\end{itemize}

@@ -1,0 +1,8 @@
+module
+import SkipLogic.SkipLogic.Verification
+#print axioms SkipLogic.SkipLogic.Verification.FormalVerificationSuiteGate
+#print axioms SkipLogic.SkipLogic.Verification.dispatch_latency_within_budget
+#print axioms SkipLogic.SkipLogic.Verification.isGateSatisfied
+#print axioms SkipLogic.SkipLogic.Verification.miri_clean_sound
+#print axioms SkipLogic.SkipLogic.Verification.productionVerificationGate
+#print axioms SkipLogic.SkipLogic.Verification.production_gate_satisfied_sound

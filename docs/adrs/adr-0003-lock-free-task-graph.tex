@@ -1,0 +1,98 @@
+\section{ADR-0003: Lock-Free Dynamic Task Graph Scheduler and Concurrency Model}
+\label{sec:adr0003}
+
+\begin{adrbox}{ADR-0003: Lock-Free Task Graph Scheduler}{Status: \statusbadge{ACCEPTED}}
+\textbf{Date:} 2026-11-23 \\
+\textbf{Context:} High-concurrency state space evaluation across modern multi-core CPU architectures. \\
+\textbf{Deciders:} Systems Concurrency Team, Runtime Engine Group \\
+\textbf{Status:} Accepted / Production Target
+\end{adrbox}
+
+\subsection{Context and Problem Statement}
+Simultaneous evaluation of prime-indexed state vectors $\PsiVec$, continuous dynamic operators $\XiOp$, physics simulation, and telemetry processing requires aggressive multi-threaded parallelization \cite{gregory2018game, herlihy2020art}. Classical mutex synchronization introduces severe thread contention, context-switch latency, and priority inversion \cite{herlihy2020art}. 
+
+To hit strict 60Hz/120Hz frame pacing targets, the engine requires a lock-free, deterministic task scheduling architecture capable of dispatching fine-grained state evaluation jobs without blocking worker threads.
+
+\subsection{Decision Drivers}
+\begin{enumerate}[label=\bfseries D\arabic*.]
+    \item \textbf{Deterministic Frame Pacing:} Zero lock contention and sub-microsecond job dispatch.
+    \item \textbf{Data-Race Freedom:} Leverage Rust's affine type system and Send/Sync traits to guarantee memory safety without global locks.
+    \item \textbf{Work-Stealing Scalability:} Dynamic load balancing across all available physical CPU cores.
+    \item \textbf{Directed Acyclic Graph (DAG) Execution:} Automatic dependency resolution between state tensor contraction, metric updates, and view snapshotting.
+\end{enumerate}
+
+\subsection{Decision Outcome}
+We adopt a \textbf{Lock-Free Dynamic Task Graph Scheduler} based on work-stealing deques and atomic dependency counters.
+
+\subsubsection{Concurrency Architecture}
+Frame execution is structured as an immutable directed acyclic graph (DAG) composed of discrete task nodes:
+\begin{itemize}
+    \item Each task node maintains an atomic dependency counter `AtomicU32`.
+    \item When a task completes, it decrements the dependency counter of its successor nodes using `Ordering::AcqRel`.
+    \item When an atomic counter hits zero, the node is immediately pushed onto the local worker's lock-free ring-buffer deque.
+    \item Idle worker threads steal tasks from the tail of neighboring deques using lock-free Chase-Lev work-stealing algorithms \cite{herlihy2020art}.
+\end{itemize}
+
+\begin{figure}[htbp]
+\centering
+\begin{tikzpicture}[node distance=1.5cm, auto, >=Stealth]
+    % Tasks
+    \node [draw, thick, rectangle, fill=primaryblue!10, rounded corners] (input) {Input Telemetry Extraction};
+    \node [draw, thick, rectangle, fill=accentblue!15, rounded corners, below left=of input] (psi) {State Vector $\Psi_k(t)$ Update};
+    \node [draw, thick, rectangle, fill=accentblue!15, rounded corners, below right=of input] (xi) {Dynamic Operator $\Xi(t)$ Integration};
+    \node [draw, thick, rectangle, fill=statusproposed!15, rounded corners, below=of psi] (metrics) {RLG / EFC Metric Contraction};
+    \node [draw, thick, rectangle, fill=statusaccepted!15, rounded corners, below=of xi] (scaffold) {Skip-Logic Trigger Evaluation};
+    \node [draw, thick, rectangle, fill=primaryblue!20, rounded corners, below=2.5cm of input] (snapshot) {Atomic State Frame Snapshot (Double Buffer)};
+
+    % Dependencies
+    \draw [->, thick] (input) -- (psi);
+    \draw [->, thick] (input) -- (xi);
+    \draw [->, thick] (psi) -- (metrics);
+    \draw [->, thick] (xi) -- (metrics);
+    \draw [->, thick] (psi) -- (scaffold);
+    \draw [->, thick] (metrics) -- (snapshot);
+    \draw [->, thick] (scaffold) -- (snapshot);
+\end{tikzpicture}
+\caption{Lock-Free Frame Dependency DAG with Atomic Predecessor Resolution.}
+\label{fig:task_graph_dag}
+\end{figure}
+
+\subsection{Rust Implementation Details}
+
+\begin{lstlisting}[language=Rust, caption={Lock-Free Task Node and Graph Dispatcher}]
+use std::sync::atomic::{AtomicU32, Ordering};
+
+pub struct TaskNode {
+    pub task_id: u32,
+    pub dependencies_remaining: AtomicU32,
+    pub dependents: &'static [u32],
+    pub work_fn: fn(&EngineContext),
+}
+
+impl TaskNode {
+    #[inline(always)]
+    pub fn mark_completed(&self, graph: &[TaskNode], queue: &WorkerQueue) {
+        for &dependent_id in self.dependents {
+            let dep_node = &graph[dependent_id as usize];
+            // Atomic decrement with Acquire-Release ordering
+            if dep_node.dependencies_remaining.fetch_sub(1, Ordering::AcqRel) == 1 {
+                // Predecessors satisfied; push to lock-free execution queue
+                queue.push_local(dependent_id);
+            }
+        }
+    }
+}
+\end{lstlisting}
+
+\subsection{Consequences}
+\subsubsection{Positive}
+\begin{itemize}
+    \item \textbf{Zero Mutex Contention:} Complete absence of blocking `Mutex<T>` or `RwLock<T>` primitives in the hot update loop.
+    \item \textbf{Optimal CPU Utilization:} Automatic load balancing across symmetric multi-processing (SMP) cores.
+    \item \textbf{Predictable Latencies:} Sub-microsecond task dispatch guarantees tight 60Hz/120Hz frame pacing.
+\end{itemize}
+
+\subsubsection{Negative and Mitigations}
+\begin{itemize}
+    \item \textbf{Graph Construction Overhead:} Building DAGs dynamically each frame can stress the memory allocator. \textbf{Mitigation:} Pre-allocate static graph topology templates during scene initialization; reset only atomic counters per frame tick.
+\end{itemize}

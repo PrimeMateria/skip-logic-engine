@@ -1,0 +1,41 @@
+\documentclass[11pt]{article}
+\usepackage[T1]{fontenc}
+\usepackage{amsmath,amssymb}
+\begin{document}
+\section*{Semantic declarations}
+\subsection*{\texttt{TelemetryMetricsSnapshot}}
+\noindent Kind: \texttt{structure}.\par
+\noindent Field \texttt{deltaPsiNormScaled}: \texttt{Nat}.\par
+\noindent Field \texttt{xiOperatorNormScaled}: \texttt{Nat}.\par
+\noindent Field \texttt{rlgEfficiencyRatioScaled}: \texttt{Nat}.\par
+\noindent Field \texttt{efcCoherenceAccumulated}: \texttt{Nat}.\par
+\subsection*{\texttt{nominalTelemetrySnapshot}}
+\noindent Kind: \texttt{definition}.\par
+\noindent Type: \texttt{TelemetryMetricsSnapshot}.\par
+\noindent Definition: \texttt{(\{ deltaPsiNormScaled := 680, xiOperatorNormScaled := 800, rlgEfficiencyRatioScaled := 850, efcCoherenceAccumulated := 1050 \} : TelemetryMetricsSnapshot)}.\par
+\noindent Axiom policy: \texttt{none}.\par
+\subsection*{\texttt{computeRlgEfficiency}}
+\noindent Kind: \texttt{definition}.\par
+\noindent Parameters: \texttt{(deltaNorm : Nat) (xiNorm : Nat)}.\par
+\noindent Type: \texttt{Nat}.\par
+\noindent Definition: \texttt{(if (Nat.beq (xiNorm) (0)) then 0 else (LexLeanRuntime.multiply ((LexLeanRuntime.multiply (deltaNorm) (1000) : Nat)) (1) : Nat))}.\par
+\noindent Axiom policy: \texttt{none}.\par
+\subsection*{\texttt{isEfcCoherent}}
+\noindent Kind: \texttt{definition}.\par
+\noindent Parameters: \texttt{(efcVal : Nat) (minBound : Nat) (maxBound : Nat)}.\par
+\noindent Type: \texttt{Bool}.\par
+\noindent Definition: \texttt{((Nat.ble (minBound) (efcVal)) \&\& (Nat.ble (efcVal) (maxBound)))}.\par
+\noindent Axiom policy: \texttt{none}.\par
+\subsection*{\texttt{telemetry\_rlg\_positive\_sound}}
+\noindent Kind: \texttt{theorem}.\par
+\noindent Statement: \texttt{((Nat.ble (0) ((nominalTelemetrySnapshot).rlgEfficiencyRatioScaled)) = true)}.\par
+\noindent Axiom policy: \texttt{none}.\par
+\subsection*{\texttt{telemetry\_efc\_in\_bounds}}
+\noindent Kind: \texttt{theorem}.\par
+\noindent Statement: \texttt{(isEfcCoherent ((nominalTelemetrySnapshot).efcCoherenceAccumulated) (800) (1200) = true)}.\par
+\noindent Axiom policy: \texttt{none}.\par
+\subsection*{\texttt{rlg\_zero\_division\_safe}}
+\noindent Kind: \texttt{theorem}.\par
+\noindent Statement: \texttt{((Nat.beq (computeRlgEfficiency (500) (0)) (0)) = true)}.\par
+\noindent Axiom policy: \texttt{none}.\par
+\end{document}

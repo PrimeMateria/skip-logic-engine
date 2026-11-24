@@ -1,0 +1,46 @@
+\documentclass[11pt]{article}
+\usepackage[T1]{fontenc}
+\usepackage{amsmath,amssymb}
+\begin{document}
+\section*{Semantic declarations}
+\subsection*{\texttt{skiplogic\_prime\_state\_space\_sound}}
+\noindent Kind: \texttt{theorem}.\par
+\noindent Statement: \texttt{((SkipLogic.SkipLogic.StateSpace.isPrimeBasisOrthogonal (2) (3) \&\& (SkipLogic.SkipLogic.StateSpace.compositeStateSpatialCounting).isFactorizable) = true)}.\par
+\noindent Axiom policy: \texttt{none}.\par
+\subsection*{\texttt{skiplogic\_compilation\_pipeline\_sound}}
+\noindent Kind: \texttt{theorem}.\par
+\noindent Statement: \texttt{((SkipLogic.SkipLogic.Pipeline.isThreeTierPipeline (SkipLogic.SkipLogic.Pipeline.defaultPipelineStatus) \&\& SkipLogic.SkipLogic.Pipeline.isSimdWidthValid (SkipLogic.SkipLogic.Pipeline.defaultPipelineStatus)) = true)}.\par
+\noindent Axiom policy: \texttt{none}.\par
+\subsection*{\texttt{skiplogic\_task\_graph\_concurrency\_sound}}
+\noindent Kind: \texttt{theorem}.\par
+\noindent Statement: \texttt{((SkipLogic.SkipLogic.TaskGraph.isSchedulerLockFree (SkipLogic.SkipLogic.TaskGraph.defaultTaskGraphConfig) \&\& SkipLogic.SkipLogic.TaskGraph.isDagAcyclicBounded (SkipLogic.SkipLogic.TaskGraph.defaultTaskGraphConfig)) = true)}.\par
+\noindent Axiom policy: \texttt{none}.\par
+\subsection*{\texttt{skiplogic\_memory\_zero\_allocation\_sound}}
+\noindent Kind: \texttt{theorem}.\par
+\noindent Statement: \texttt{((SkipLogic.SkipLogic.Memory.isCacheAligned64 (SkipLogic.SkipLogic.Memory.defaultMemoryLayout) \&\& SkipLogic.SkipLogic.Memory.isZeroAllocEnforced (SkipLogic.SkipLogic.Memory.defaultMemoryLayout)) = true)}.\par
+\noindent Axiom policy: \texttt{none}.\par
+\subsection*{\texttt{skiplogic\_subsystem\_view\_decoupling\_sound}}
+\noindent Kind: \texttt{theorem}.\par
+\noindent Statement: \texttt{((SkipLogic.SkipLogic.Subsystems.isQuadLayerSubsystem (SkipLogic.SkipLogic.Subsystems.defaultSubsystemsLayout) \&\& SkipLogic.SkipLogic.Subsystems.isViewIsolatedReadOnly (SkipLogic.SkipLogic.Subsystems.defaultSubsystemsLayout)) = true)}.\par
+\noindent Axiom policy: \texttt{none}.\par
+\subsection*{\texttt{skiplogic\_telemetry\_rlg\_efc\_sound}}
+\noindent Kind: \texttt{theorem}.\par
+\noindent Statement: \texttt{(((Nat.ble (0) ((SkipLogic.SkipLogic.Telemetry.nominalTelemetrySnapshot).rlgEfficiencyRatioScaled)) \&\& SkipLogic.SkipLogic.Telemetry.isEfcCoherent ((SkipLogic.SkipLogic.Telemetry.nominalTelemetrySnapshot).efcCoherenceAccumulated) (800) (1200)) = true)}.\par
+\noindent Axiom policy: \texttt{none}.\par
+\subsection*{\texttt{skiplogic\_scaffolding\_convergence\_sound}}
+\noindent Kind: \texttt{theorem}.\par
+\noindent Statement: \texttt{((SkipLogic.SkipLogic.Scaffolding.isStallDetected (550) (600) \&\& SkipLogic.SkipLogic.Scaffolding.isReturnReady (920) (900)) = true)}.\par
+\noindent Axiom policy: \texttt{none}.\par
+\subsection*{\texttt{skiplogic\_formal\_verification\_matrix\_sound}}
+\noindent Kind: \texttt{theorem}.\par
+\noindent Statement: \texttt{(SkipLogic.SkipLogic.Verification.isGateSatisfied (SkipLogic.SkipLogic.Verification.productionVerificationGate) = true)}.\par
+\noindent Axiom policy: \texttt{none}.\par
+\subsection*{\texttt{skiplogic\_cicd\_test\_harness\_sound}}
+\noindent Kind: \texttt{theorem}.\par
+\noindent Statement: \texttt{(SkipLogic.SkipLogic.Harness.isHarnessProductionReady (SkipLogic.SkipLogic.Harness.productionHarnessConfig) = true)}.\par
+\noindent Axiom policy: \texttt{none}.\par
+\subsection*{\texttt{skiplogic\_end\_to\_end\_engine\_certified}}
+\noindent Kind: \texttt{theorem}.\par
+\noindent Statement: \texttt{((SkipLogic.SkipLogic.Parameters.isTiming60Fps (SkipLogic.SkipLogic.Parameters.defaultEngineParams) \&\& ((SkipLogic.SkipLogic.Scaffolding.spatialScaffoldRoute).guaranteedConvergence \&\& (SkipLogic.SkipLogic.Memory.defaultMemoryLayout).zeroAllocHotLoop)) = true)}.\par
+\noindent Axiom policy: \texttt{none}.\par
+\end{document}

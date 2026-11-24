@@ -1,0 +1,10 @@
+module
+import SkipLogic.SkipLogic.Subsystems
+#print axioms SkipLogic.SkipLogic.Subsystems.SubsystemArchitectureLayout
+#print axioms SkipLogic.SkipLogic.Subsystems.defaultSubsystemsLayout
+#print axioms SkipLogic.SkipLogic.Subsystems.isQuadLayerSubsystem
+#print axioms SkipLogic.SkipLogic.Subsystems.isViewIsolatedReadOnly
+#print axioms SkipLogic.SkipLogic.Subsystems.quad_layer_subsystems_sound
+#print axioms SkipLogic.SkipLogic.Subsystems.rotateTripleBufferIndex
+#print axioms SkipLogic.SkipLogic.Subsystems.triple_buffer_rotation_sound
+#print axioms SkipLogic.SkipLogic.Subsystems.view_isolated_read_only_sound

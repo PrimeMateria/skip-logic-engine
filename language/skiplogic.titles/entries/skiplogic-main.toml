@@ -1,0 +1,16 @@
+spec = "lexlean/entry/1"
+id = "skiplogic-main"
+category = "label-word"
+surface_arity = 0
+frame = "atom"
+
+[denotation]
+kind = "defined"
+value = "(const lexlean.std.nat::nat)"
+
+[[form]]
+id = "skiplogic-main"
+channel = "text"
+surface = "Skip logic game engine formal verification suite"
+canonical_source = true
+features = ["sentence-case", "singular"]

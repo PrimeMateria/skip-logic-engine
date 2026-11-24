@@ -1,0 +1,47 @@
+\documentclass[11pt]{article}
+\usepackage[T1]{fontenc}
+\usepackage{amsmath,amssymb}
+\begin{document}
+\section*{Semantic declarations}
+\subsection*{\texttt{EngineMemoryLayout}}
+\noindent Kind: \texttt{structure}.\par
+\noindent Field \texttt{cacheLineAlignBytes}: \texttt{Nat}.\par
+\noindent Field \texttt{frameArenaBytes}: \texttt{Nat}.\par
+\noindent Field \texttt{sceneArenaBytes}: \texttt{Nat}.\par
+\noindent Field \texttt{zeroAllocHotLoop}: \texttt{Bool}.\par
+\subsection*{\texttt{defaultMemoryLayout}}
+\noindent Kind: \texttt{definition}.\par
+\noindent Type: \texttt{EngineMemoryLayout}.\par
+\noindent Definition: \texttt{(\{ cacheLineAlignBytes := 64, frameArenaBytes := 2097152, sceneArenaBytes := 16777216, zeroAllocHotLoop := true \} : EngineMemoryLayout)}.\par
+\noindent Axiom policy: \texttt{none}.\par
+\subsection*{\texttt{isCacheAligned64}}
+\noindent Kind: \texttt{definition}.\par
+\noindent Parameters: \texttt{(m : EngineMemoryLayout)}.\par
+\noindent Type: \texttt{Bool}.\par
+\noindent Definition: \texttt{(Nat.beq ((m).cacheLineAlignBytes) (64))}.\par
+\noindent Axiom policy: \texttt{none}.\par
+\subsection*{\texttt{isZeroAllocEnforced}}
+\noindent Kind: \texttt{definition}.\par
+\noindent Parameters: \texttt{(m : EngineMemoryLayout)}.\par
+\noindent Type: \texttt{Bool}.\par
+\noindent Definition: \texttt{(m).zeroAllocHotLoop}.\par
+\noindent Axiom policy: \texttt{none}.\par
+\subsection*{\texttt{computeBumpOffset}}
+\noindent Kind: \texttt{definition}.\par
+\noindent Parameters: \texttt{(current : Nat) (requested : Nat)}.\par
+\noindent Type: \texttt{Nat}.\par
+\noindent Definition: \texttt{(current + requested)}.\par
+\noindent Axiom policy: \texttt{none}.\par
+\subsection*{\texttt{cache\_line\_alignment\_sound}}
+\noindent Kind: \texttt{theorem}.\par
+\noindent Statement: \texttt{(isCacheAligned64 (defaultMemoryLayout) = true)}.\par
+\noindent Axiom policy: \texttt{none}.\par
+\subsection*{\texttt{zero\_allocation\_hot\_loop\_sound}}
+\noindent Kind: \texttt{theorem}.\par
+\noindent Statement: \texttt{(isZeroAllocEnforced (defaultMemoryLayout) = true)}.\par
+\noindent Axiom policy: \texttt{none}.\par
+\subsection*{\texttt{bump\_allocation\_offset\_sound}}
+\noindent Kind: \texttt{theorem}.\par
+\noindent Statement: \texttt{((Nat.beq (computeBumpOffset (128) (64)) (192)) = true)}.\par
+\noindent Axiom policy: \texttt{none}.\par
+\end{document}

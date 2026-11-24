@@ -1,0 +1,145 @@
+\documentclass[11pt,a4paper]{article}
+
+\input{preamble.tex}
+
+\begin{document}
+
+% Title Page
+\begin{titlepage}
+    \centering
+    \vspace*{1.5cm}
+    
+    {\Huge \bfseries \color{primaryblue} Skip-Logic Game Engine}\\[0.5cm]
+    {\LARGE \bfseries \color{accentblue} Production Architecture Decision Records (ADRs)}\\[0.3cm]
+    {\large \textsf{Formal Architectural Foundation for Lexlean-Compiled Prime-Indexed State Engines in Rust}}\\[1.5cm]
+    
+    \begin{tcolorbox}[colback=primaryblue!5!white,colframe=primaryblue,width=0.9\textwidth,arc=4pt]
+        \centering \small \sffamily
+        \textbf{Document Series:} ADR-0001 through ADR-0008 \\
+        \textbf{System Architecture:} Multiplicity Theory \& QARI Cognitive Framework \\
+        \textbf{Target Runtime:} Native Rust (AVX2/AVX-512, Zero-Allocation, Lock-Free DAG) \\
+        \textbf{Authoring Language:} Lexlean DSL Lowered via PrismPM Compiler \\
+        \textbf{Publication Date:} November 23, 2026 \\
+        \textbf{Target Directory:} \texttt{/run/media/multiplic/AGI/prismagi/mount/SUBSYSTEMS/skip-logic}
+    \end{tcolorbox}
+    
+    \vspace{1.5cm}
+    
+    \begin{tikzpicture}[scale=0.85]
+        \draw[thick, primaryblue, fill=primaryblue!10] (0, 0) circle (1.2) node[align=center] {\textbf{Lexlean}\\\footnotesize DSL};
+        \draw[thick, accentblue, fill=accentblue!15] (4, 0) circle (1.2) node[align=center] {\textbf{PrismPM}\\\footnotesize Compiler};
+        \draw[thick, statusaccepted, fill=statusaccepted!15] (8, 0) circle (1.2) node[align=center] {\textbf{Rust}\\\footnotesize Runtime};
+        \draw[thick, statusproposed, fill=statusproposed!15] (12, 0) circle (1.2) node[align=center] {\textbf{Skip-Logic}\\\footnotesize Scaffolding};
+        
+        \draw[-{Stealth[length=3mm]}, ultra thick, primaryblue] (1.2, 0) -- (2.8, 0);
+        \draw[-{Stealth[length=3mm]}, ultra thick, accentblue] (5.2, 0) -- (6.8, 0);
+        \draw[-{Stealth[length=3mm]}, ultra thick, statusaccepted] (9.2, 0) -- (10.8, 0);
+    \end{tikzpicture}
+    
+    \vfill
+    
+    {\small \textsf{PrismAGI Cognitive Systems $\bullet$ Core Architecture Group $\bullet$ Confidential Production Specification}}
+\end{titlepage}
+
+\tableofcontents
+\newpage
+
+\section*{Executive Architectural Summary}
+\addcontentsline{toc}{section}{Executive Architectural Summary}
+
+The \textbf{Skip-Logic Game Engine} establishes a foundational paradigm shift in interactive software engineering. Classical branching architectures rely on discrete finite state machines (FSMs) or nested conditional scripts, which experience combinatorial state explosion ($O(N \cdot M)$) and brittle dead-end loops when modeling complex, multi-dimensional cognitive progression.
+
+Grounded in \textbf{Multiplicity Theory} and the \textbf{QARI (Quantum-Adaptive Recursive Interaction)} Cognitive Framework, this engine formulates state spaces as continuous, prime-indexed Hilbert spaces:
+\begin{equation*}
+\Psi_k(t) = \sum_{p_i \in \Primes} \alpha_{p_i}(t) \ket{p_i}
+\end{equation*}
+By leveraging the \textbf{Fundamental Theorem of Arithmetic}, any compound narrative milestone or composite cognitive competency is mapped to a unique prime product, guaranteeing unambiguous, non-overlapping factorization into fundamental atomic concepts.
+
+\subsection*{The 8 Production Architecture Decision Records}
+This document compiles the eight authoritative Architectural Decision Records (ADRs) governing production implementation:
+
+\begin{enumerate}
+    \item \textbf{ADR-0001: Prime-Indexed Hilbert Tensor State Space and Sheaf Morphology} \\
+    Establishes the mathematical state space $\Hilb$, dynamic operator $\XiOp$, open sheaf curriculum dynamics $C_i(t)$, and ethical field tensors $\EthicalTensor$.
+    \item \textbf{ADR-0002: Three-Tier Compilation Pipeline: Lexlean to PrismPM to Native Rust} \\
+    Defines the declarative authoring layer (Lexlean), intermediate topological lowering and dead-branch elimination (PrismPM), and zero-cost Rust emission.
+    \item \textbf{ADR-0003: Lock-Free Dynamic Task Graph Scheduler and Concurrency Model} \\
+    Architects deterministic frame evaluation using work-stealing DAG execution, atomic dependency resolution, and data-race freedom.
+    \item \textbf{ADR-0004: Zero-Allocation Inner Loop, Arena Memory Pools, and Cache-Aligned SIMD Layout} \\
+    Enforces a strict zero-heap-allocation policy in active frame updates via two-tier bump arenas and 64-byte aligned Structure-of-Arrays (SoA) SIMD vectors.
+    \item \textbf{ADR-0005: Decoupled Subsystem Architecture and Read-Only State Snapshotting} \\
+    Isolates core platform, logic, view, and resource subsystems, utilizing lock-free triple-buffered atomic state snapshotting.
+    \item \textbf{ADR-0006: Quantitative Telemetry: Recursive Learning Gain and Ethical Field Coherence} \\
+    Implements real-time mathematical integrators for Recursive Learning Gain ($\RLG$) and Ethical Field Coherence ($\EFC$).
+    \item \textbf{ADR-0007: Dynamic Skip-Logic Scaffolding and Sheaf-Morphic Adaptive Trajectory Routing} \\
+    Architects closed-loop adaptive routing, mounting interactive PhET simulations for targeted cognitive remediation with guaranteed trajectory convergence.
+    \item \textbf{ADR-0008: Formal Verification, Automated Testing, and CI/CD Quality Assurance} \\
+    Establishes a four-tier verification framework spanning Lean 4 interactive theorem proofs, compiler fuzzing, runtime Miri sanitization, and automated performance gates.
+\end{enumerate}
+
+\newpage
+
+% Include all ADRs
+\input{adr-0001-mathematical-state-space.tex}
+\newpage
+
+\input{adr-0002-dsl-compilation-pipeline.tex}
+\newpage
+
+\input{adr-0003-lock-free-task-graph.tex}
+\newpage
+
+\input{adr-0004-memory-zero-allocation.tex}
+\newpage
+
+\input{adr-0005-subsystem-decoupling-view.tex}
+\newpage
+
+\input{adr-0006-telemetry-rlg-efc-metrics.tex}
+\newpage
+
+\input{adr-0007-skip-logic-scaffolding-routing.tex}
+\newpage
+
+\input{adr-0008-formal-verification-testing.tex}
+\newpage
+
+\section{System Architecture Roadmap and Implementation Phases}
+\label{sec:roadmap}
+
+\begin{figure}[htbp]
+\centering
+\begin{tikzpicture}[node distance=1.3cm, auto, >=Stealth]
+    \node [draw, thick, rectangle, fill=primaryblue!10, text width=12cm, align=left, rounded corners] (p1) {
+        \textbf{Phase 1: Core Kernel and Hilbert State Primitives}\\
+        \footnotesize $\bullet$ Rust prime basis structs \texttt{PrimeStateVector} $\bullet$ 64-byte aligned SoA layouts\\
+        $\bullet$ Lock-free task graph dispatcher $\bullet$ Two-tier bump arenas (\texttt{FrameScratchArena})
+    };
+    \node [draw, thick, rectangle, fill=accentblue!15, text width=12cm, align=left, rounded corners, below=of p1] (p2) {
+        \textbf{Phase 2: Lexlean Grammar Definition and PrismPM Compiler}\\
+        \footnotesize $\bullet$ Lexlean AST parser $\bullet$ Topological sheaf verifier $\bullet$ Dead-branch pruner\\
+        $\bullet$ Matrix lowering to SIMD vector operations $\bullet$ Automated Rust code synthesizer
+    };
+    \node [draw, thick, rectangle, fill=statusproposed!15, text width=12cm, align=left, rounded corners, below=of p2] (p3) {
+        \textbf{Phase 3: Subsystem Integration and View Decoupling}\\
+        \footnotesize $\bullet$ Native Platform Abstraction Layer (PLA) $\bullet$ Triple-buffered atomic state snapshots\\
+        $\bullet$ Read-only wgpu/Vulkan rendering integration $\bullet$ Async PhET simulation streaming pipeline
+    };
+    \node [draw, thick, rectangle, fill=statusaccepted!15, text width=12cm, align=left, rounded corners, below=of p3] (p4) {
+        \textbf{Phase 4: Telemetry Analytics, Scaffolding Controls, and CI/CD}\\
+        \footnotesize $\bullet$ Real-time RLG and EFC SIMD integrators $\bullet$ Sheaf-morphic skip-logic router\\
+        $\bullet$ Lean 4 formal verification proofs $\bullet$ Criterion.rs performance regression gates
+    };
+
+    \draw [->, ultra thick, primaryblue] (p1) -- (p2);
+    \draw [->, ultra thick, accentblue] (p2) -- (p3);
+    \draw [->, ultra thick, statusproposed] (p3) -- (p4);
+\end{tikzpicture}
+\caption{Four-Phase Engineering Execution Roadmap.}
+\label{fig:engineering_roadmap}
+\end{figure}
+
+\bibliographystyle{plain}
+\bibliography{references}
+
+\end{document}

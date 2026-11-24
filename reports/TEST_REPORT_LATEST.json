@@ -1,0 +1,300 @@
+{
+  "timestamp": "20261123T075758",
+  "iso_time": "2026-11-23T07:57:58.715636",
+  "toolchain": {
+    "pinned_toolchain": "leanprover/lean4:v4.32.2",
+    "lean_version": "Lean (version 4.32.2, x86_64-unknown-linux-gnu, commit f3b06c705e6c85f5314019d5d3baab0fec5b580c, Release)",
+    "lake_version": "Lake version 5.0.0-src+f3b06c7 (Lean version 4.32.2)",
+    "lexlean_info": {
+      "lexlean": "0.4.3",
+      "language": "1.0",
+      "compiler-semantics": "4bd46ef62ba56a77cb3c6453346671a809ccd665fc1f5334e4b1b9dce01f3245",
+      "lean-toolchain": "leanprover/lean4:v4.32.2"
+    },
+    "prismpm_version": "prismpm 0.5.0"
+  },
+  "suites": [
+    {
+      "id": "TS-01",
+      "name": "Toolchain Pin & Runtime Environment",
+      "target": "lean, lake, lexlean, prismpm",
+      "status": "PASS",
+      "duration": 0.33120452899311204
+    },
+    {
+      "id": "TS-02",
+      "name": "Lean Lake Host Build & Hygiene",
+      "target": "lake build",
+      "status": "PASS",
+      "duration": 0.20295005099615082
+    },
+    {
+      "id": "TS-03",
+      "name": "LexLean Lock Parity & Canonical Configuration",
+      "target": "lexlean lock --check",
+      "status": "PASS",
+      "duration": 1.1909445469937054
+    },
+    {
+      "id": "TS-04",
+      "name": "Semantic IR AST & Module Type Check",
+      "target": "lexlean check",
+      "status": "PASS",
+      "duration": 1.1456585990090389
+    },
+    {
+      "id": "TS-05",
+      "name": "Lean 4 Kernel Formal Verification & Attestation",
+      "target": "lexlean verify",
+      "status": "PASS",
+      "duration": 569.3040288810007
+    },
+    {
+      "id": "TS-06",
+      "name": "Formal Mathematical Invariants Audit",
+      "target": "Certified Reflexivity Theorems Audit",
+      "status": "PASS",
+      "duration": 0.0012029639910906553
+    },
+    {
+      "id": "TS-07",
+      "name": "Build & Attestation Artifact Audit",
+      "target": ".lexlean/verified directory audit",
+      "status": "PASS",
+      "duration": 0.001
+    },
+    {
+      "id": "TS-08",
+      "name": "PrismPM Model Framework Compilation & Production Release",
+      "target": "prismpm check && prismpm build",
+      "status": "PASS",
+      "duration": 11.772111177982879
+    },
+    {
+      "id": "TS-09",
+      "name": "Skip-Logic High-Scale Simulation & Stress Benchmark (INV-SKIP-1 to 4)",
+      "target": "benchmark_skiplogic_scaling.py",
+      "status": "PASS",
+      "duration": 0.22404269699472934
+    }
+  ],
+  "lexlean": {
+    "check": {
+      "status": true,
+      "stdout": "checked 13 modules (source b672dd154786ea28f4c67ca7d1ebc8236e8836e6793d2fb596ee21b4851125f2, semantic 6ad15312456867121dba0175d585f5f7f906d1a32eeb1a805591078eda4a4075)",
+      "source_hash": "b672dd154786ea28f4c67ca7d1ebc8236e8836e6793d2fb596ee21b4851125f2",
+      "semantic_hash": "6ad15312456867121dba0175d585f5f7f906d1a32eeb1a805591078eda4a4075",
+      "duration": 1.1456585990090389
+    },
+    "verify": {
+      "status": true,
+      "stdout": "verified 13 modules; attestation b9f9c286f5846d913bc748960b8290bc7b6833cf27af8c657e588883c9a18747",
+      "modules_verified": 13,
+      "attestation": "b9f9c286f5846d913bc748960b8290bc7b6833cf27af8c657e588883c9a18747",
+      "duration": 569.3040288810007
+    }
+  },
+  "formal_audit": {
+    "total_theorems": 127,
+    "theorems": [
+      "SkipLogicEngineParameters",
+      "universalMultiplicityScaled",
+      "fixedTimestepUs",
+      "maxActivePrimes",
+      "frameArenaCapacityBytes",
+      "cacheLineAlignmentBytes",
+      "targetFrameFps",
+      "rlgStallThresholdScaled",
+      "efcMinBoundScaled",
+      "efcMaxBoundScaled",
+      "defaultEngineParams",
+      "highPerformanceEngineParams",
+      "isTiming60Fps",
+      "isAlignmentValid",
+      "isCapacitySufficient",
+      "default_params_timing_stable",
+      "default_alignment_valid",
+      "default_capacity_sufficient",
+      "high_performance_alignment_valid",
+      "PrimeBasisState",
+      "primeId",
+      "amplitudeScaled",
+      "velocityScaled",
+      "CompositeState",
+      "compositeProduct",
+      "activePrimesCount",
+      "isFactorizable",
+      "atomicStateCounting",
+      "atomicStateSpatial",
+      "compositeStateSpatialCounting",
+      "isPrimeBasisOrthogonal",
+      "computeCompositeProduct",
+      "prime_basis_orthogonality_sound",
+      "composite_state_product_sound",
+      "composite_state_factorizable_sound",
+      "atomic_state_counting_prime",
+      "CompilationPipelineStatus",
+      "totalTiersCount",
+      "deadBranchesPruned",
+      "simdVectorWidthBits",
+      "zeroCostRustEmitted",
+      "defaultPipelineStatus",
+      "isThreeTierPipeline",
+      "isSimdWidthValid",
+      "pipeline_three_tier_sound",
+      "simd_vector_width_valid",
+      "dead_branch_pruning_sound",
+      "TaskGraphScheduleConfig",
+      "maxTaskNodesCapacity",
+      "workerThreadsCount",
+      "maxDependencyDepth",
+      "isLockFreeScheduler",
+      "defaultTaskGraphConfig",
+      "isSchedulerLockFree",
+      "isDagAcyclicBounded",
+      "canSatisfyDependency",
+      "task_graph_lock_free_sound",
+      "task_graph_acyclic_bounded",
+      "dependency_satisfaction_sound",
+      "EngineMemoryLayout",
+      "cacheLineAlignBytes",
+      "frameArenaBytes",
+      "sceneArenaBytes",
+      "zeroAllocHotLoop",
+      "defaultMemoryLayout",
+      "isCacheAligned64",
+      "isZeroAllocEnforced",
+      "computeBumpOffset",
+      "cache_line_alignment_sound",
+      "zero_allocation_hot_loop_sound",
+      "bump_allocation_offset_sound",
+      "SubsystemArchitectureLayout",
+      "logicSubsystemId",
+      "platformSubsystemId",
+      "viewSubsystemId",
+      "resourceSubsystemId",
+      "snapshotBufferCapacity",
+      "viewHasWriteAccess",
+      "defaultSubsystemsLayout",
+      "isQuadLayerSubsystem",
+      "isViewIsolatedReadOnly",
+      "rotateTripleBufferIndex",
+      "quad_layer_subsystems_sound",
+      "view_isolated_read_only_sound",
+      "triple_buffer_rotation_sound",
+      "TelemetryMetricsSnapshot",
+      "deltaPsiNormScaled",
+      "xiOperatorNormScaled",
+      "rlgEfficiencyRatioScaled",
+      "efcCoherenceAccumulated",
+      "nominalTelemetrySnapshot",
+      "computeRlgEfficiency",
+      "isEfcCoherent",
+      "telemetry_rlg_positive_sound",
+      "telemetry_efc_in_bounds",
+      "rlg_zero_division_safe",
+      "SheafMorphismRoute",
+      "requiredPrime",
+      "triggerThresholdScaled",
+      "returnThresholdScaled",
+      "scaffoldModuleId",
+      "guaranteedConvergence",
+      "spatialScaffoldRoute",
+      "isStallDetected",
+      "isReturnReady",
+      "scaffolding_stall_detected_sound",
+      "scaffolding_return_ready_sound",
+      "sheaf_morphism_convergence_guaranteed",
+      "FormalVerificationSuiteGate",
+      "leanKernelProofsCount",
+      "compilerFuzzingCasesCount",
+      "maxDispatchLatencyNs",
+      "zeroMiriUndefinedBehavior",
+      "productionVerificationGate",
+      "isGateSatisfied",
+      "production_gate_satisfied_sound",
+      "dispatch_latency_within_budget",
+      "miri_clean_sound",
+      "skiplogic_prime_state_space_sound",
+      "skiplogic_compilation_pipeline_sound",
+      "skiplogic_task_graph_concurrency_sound",
+      "skiplogic_memory_zero_allocation_sound",
+      "skiplogic_subsystem_view_decoupling_sound",
+      "skiplogic_telemetry_rlg_efc_sound",
+      "skiplogic_scaffolding_convergence_sound",
+      "skiplogic_formal_verification_matrix_sound",
+      "skiplogic_end_to_end_engine_certified"
+    ]
+  },
+  "summary": {
+    "total": 9,
+    "passed": 9,
+    "failed": 0,
+    "status": "PASS"
+  },
+  "prismpm": {
+    "check_status": true,
+    "build_status": true,
+    "published_hash": "c40257234eb1faacdeebe983f002367aa3e05de21c56ae516d0a440d51f98edd"
+  },
+  "scaling_benchmark": {
+    "all_passed": true,
+    "total_duration_s": 0.22404269699472934,
+    "suites": [
+      {
+        "name": "INV-SKIP-1: Prime State Factorization Scaling",
+        "passed": true,
+        "cases": [
+          {
+            "count": 10,
+            "factorized": 10,
+            "duration_s": 0.00011847101268358529,
+            "passed": true
+          },
+          {
+            "count": 100,
+            "factorized": 100,
+            "duration_s": 0.0006142979982541874,
+            "passed": true
+          },
+          {
+            "count": 1000,
+            "factorized": 1000,
+            "duration_s": 0.0314440350048244,
+            "passed": true
+          },
+          {
+            "count": 10000,
+            "factorized": 10000,
+            "duration_s": 0.09101282600022387,
+            "passed": true
+          }
+        ]
+      },
+      {
+        "name": "INV-SKIP-2: Lock-Free Task Graph Concurrency (<2.0 us)",
+        "passed": true,
+        "avg_dispatch_us": 0.006511406240861106,
+        "total_tasks_evaluated": 128000,
+        "duration_s": 0.0008334599988302216
+      },
+      {
+        "name": "INV-SKIP-3: Zero-Allocation Arena & 64-Byte Cache Alignment",
+        "passed": true,
+        "heap_allocations": 0,
+        "alignment_checks_passed": 200000,
+        "frames_tested": 10000,
+        "duration_s": 0.09981012699427083
+      },
+      {
+        "name": "INV-SKIP-4: Telemetry Integrators & Scaffolding Convergence",
+        "passed": true,
+        "scaffolding_triggered": true,
+        "converged": true,
+        "final_alpha_3": 0.9428,
+        "accumulated_efc": 8.4,
+        "steps_to_converge": 73
+      }
+    ]
+  }
+}

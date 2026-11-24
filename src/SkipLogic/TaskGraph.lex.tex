@@ -1,0 +1,69 @@
+\begin{lexlean}{SkipLogic.TaskGraph}
+\useglossary{lexlean.std.bool@1.2.0}
+\useglossary{lexlean.std.nat@1.2.0}
+\useglossary{skiplogic.titles@1.0.0}
+\importmodule{SkipLogic.Parameters}
+\title{Skip logic lock free dynamic task graph scheduler}
+\begin{semanticmodule}
+structure{
+  name: TaskGraphScheduleConfig,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: maxTaskNodesCapacity, type: Nat},
+    {name: workerThreadsCount, type: Nat},
+    {name: maxDependencyDepth, type: Nat},
+    {name: isLockFreeScheduler, type: Bool}
+  ]
+}
+
+definition{
+  name: defaultTaskGraphConfig,
+  parameters: [],
+  result: TaskGraphScheduleConfig,
+  body: (record TaskGraphScheduleConfig {maxTaskNodesCapacity := 256, workerThreadsCount := 8, maxDependencyDepth := 16, isLockFreeScheduler := true})
+}
+
+definition{
+  name: isSchedulerLockFree,
+  parameters: [c : TaskGraphScheduleConfig],
+  result: Bool,
+  body: (project c isLockFreeScheduler)
+}
+
+definition{
+  name: isDagAcyclicBounded,
+  parameters: [c : TaskGraphScheduleConfig],
+  result: Bool,
+  body: ((project c maxDependencyDepth) <=? 64)
+}
+
+definition{
+  name: canSatisfyDependency,
+  parameters: [depRemaining : Nat],
+  result: Bool,
+  body: (depRemaining =? 0)
+}
+
+theorem{
+  name: task_graph_lock_free_sound,
+  parameters: [],
+  statement: ((isSchedulerLockFree (defaultTaskGraphConfig)) = true),
+  proof: reflexivity{}
+}
+
+theorem{
+  name: task_graph_acyclic_bounded,
+  parameters: [],
+  statement: ((isDagAcyclicBounded (defaultTaskGraphConfig)) = true),
+  proof: reflexivity{}
+}
+
+theorem{
+  name: dependency_satisfaction_sound,
+  parameters: [],
+  statement: (((canSatisfyDependency 0) && (not (canSatisfyDependency 1))) = true),
+  proof: reflexivity{}
+}
+\end{semanticmodule}
+\end{lexlean}

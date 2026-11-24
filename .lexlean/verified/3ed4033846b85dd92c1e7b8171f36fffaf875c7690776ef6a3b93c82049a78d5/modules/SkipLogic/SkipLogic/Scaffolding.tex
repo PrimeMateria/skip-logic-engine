@@ -1,0 +1,42 @@
+\documentclass[11pt]{article}
+\usepackage[T1]{fontenc}
+\usepackage{amsmath,amssymb}
+\begin{document}
+\section*{Semantic declarations}
+\subsection*{\texttt{SheafMorphismRoute}}
+\noindent Kind: \texttt{structure}.\par
+\noindent Field \texttt{requiredPrime}: \texttt{Nat}.\par
+\noindent Field \texttt{triggerThresholdScaled}: \texttt{Nat}.\par
+\noindent Field \texttt{returnThresholdScaled}: \texttt{Nat}.\par
+\noindent Field \texttt{scaffoldModuleId}: \texttt{Nat}.\par
+\noindent Field \texttt{guaranteedConvergence}: \texttt{Bool}.\par
+\subsection*{\texttt{spatialScaffoldRoute}}
+\noindent Kind: \texttt{definition}.\par
+\noindent Type: \texttt{SheafMorphismRoute}.\par
+\noindent Definition: \texttt{(\{ requiredPrime := 3, triggerThresholdScaled := 600, returnThresholdScaled := 900, scaffoldModuleId := 42, guaranteedConvergence := true \} : SheafMorphismRoute)}.\par
+\noindent Axiom policy: \texttt{none}.\par
+\subsection*{\texttt{isStallDetected}}
+\noindent Kind: \texttt{definition}.\par
+\noindent Parameters: \texttt{(currentAmp : Nat) (threshold : Nat)}.\par
+\noindent Type: \texttt{Bool}.\par
+\noindent Definition: \texttt{(Nat.blt (currentAmp) (threshold))}.\par
+\noindent Axiom policy: \texttt{none}.\par
+\subsection*{\texttt{isReturnReady}}
+\noindent Kind: \texttt{definition}.\par
+\noindent Parameters: \texttt{(currentAmp : Nat) (threshold : Nat)}.\par
+\noindent Type: \texttt{Bool}.\par
+\noindent Definition: \texttt{(Nat.ble (threshold) (currentAmp))}.\par
+\noindent Axiom policy: \texttt{none}.\par
+\subsection*{\texttt{scaffolding\_stall\_detected\_sound}}
+\noindent Kind: \texttt{theorem}.\par
+\noindent Statement: \texttt{((isStallDetected (550) (600) \&\& (!isStallDetected (650) (600))) = true)}.\par
+\noindent Axiom policy: \texttt{none}.\par
+\subsection*{\texttt{scaffolding\_return\_ready\_sound}}
+\noindent Kind: \texttt{theorem}.\par
+\noindent Statement: \texttt{((isReturnReady (920) (900) \&\& (!isReturnReady (880) (900))) = true)}.\par
+\noindent Axiom policy: \texttt{none}.\par
+\subsection*{\texttt{sheaf\_morphism\_convergence\_guaranteed}}
+\noindent Kind: \texttt{theorem}.\par
+\noindent Statement: \texttt{((spatialScaffoldRoute).guaranteedConvergence = true)}.\par
+\noindent Axiom policy: \texttt{none}.\par
+\end{document}

@@ -1,0 +1,63 @@
+\documentclass[11pt]{article}
+\usepackage[T1]{fontenc}
+\usepackage{amsmath,amssymb}
+\begin{document}
+\section*{Semantic declarations}
+\subsection*{\texttt{SkipLogicEngineParameters}}
+\noindent Kind: \texttt{structure}.\par
+\noindent Field \texttt{universalMultiplicityScaled}: \texttt{Nat}.\par
+\noindent Field \texttt{fixedTimestepUs}: \texttt{Nat}.\par
+\noindent Field \texttt{maxActivePrimes}: \texttt{Nat}.\par
+\noindent Field \texttt{frameArenaCapacityBytes}: \texttt{Nat}.\par
+\noindent Field \texttt{cacheLineAlignmentBytes}: \texttt{Nat}.\par
+\noindent Field \texttt{targetFrameFps}: \texttt{Nat}.\par
+\noindent Field \texttt{rlgStallThresholdScaled}: \texttt{Nat}.\par
+\noindent Field \texttt{efcMinBoundScaled}: \texttt{Nat}.\par
+\noindent Field \texttt{efcMaxBoundScaled}: \texttt{Nat}.\par
+\subsection*{\texttt{defaultEngineParams}}
+\noindent Kind: \texttt{definition}.\par
+\noindent Execution: executable, non-escaping closures only.\par
+\noindent Production root for targets \texttt{rust-std}; admitted effects: \texttt{allocation}.\par
+\noindent Type: \texttt{SkipLogicEngineParameters}.\par
+\noindent Definition: \texttt{(\{ universalMultiplicityScaled := 729, fixedTimestepUs := 16666, maxActivePrimes := 64, frameArenaCapacityBytes := 2097152, cacheLineAlignmentBytes := 64, targetFrameFps := 60, rlgStallThresholdScaled := 500, efcMinBoundScaled := 800, efcMaxBoundScaled := 1200 \} : SkipLogicEngineParameters)}.\par
+\noindent Axiom policy: \texttt{none}.\par
+\subsection*{\texttt{highPerformanceEngineParams}}
+\noindent Kind: \texttt{definition}.\par
+\noindent Type: \texttt{SkipLogicEngineParameters}.\par
+\noindent Definition: \texttt{(\{ universalMultiplicityScaled := 850, fixedTimestepUs := 8333, maxActivePrimes := 64, frameArenaCapacityBytes := 4194304, cacheLineAlignmentBytes := 64, targetFrameFps := 120, rlgStallThresholdScaled := 400, efcMinBoundScaled := 850, efcMaxBoundScaled := 1150 \} : SkipLogicEngineParameters)}.\par
+\noindent Axiom policy: \texttt{none}.\par
+\subsection*{\texttt{isTiming60Fps}}
+\noindent Kind: \texttt{definition}.\par
+\noindent Parameters: \texttt{(p : SkipLogicEngineParameters)}.\par
+\noindent Type: \texttt{Bool}.\par
+\noindent Definition: \texttt{((Nat.beq ((p).fixedTimestepUs) (16666)) \&\& (Nat.beq ((p).targetFrameFps) (60)))}.\par
+\noindent Axiom policy: \texttt{none}.\par
+\subsection*{\texttt{isAlignmentValid}}
+\noindent Kind: \texttt{definition}.\par
+\noindent Parameters: \texttt{(p : SkipLogicEngineParameters)}.\par
+\noindent Type: \texttt{Bool}.\par
+\noindent Definition: \texttt{(Nat.beq ((p).cacheLineAlignmentBytes) (64))}.\par
+\noindent Axiom policy: \texttt{none}.\par
+\subsection*{\texttt{isCapacitySufficient}}
+\noindent Kind: \texttt{definition}.\par
+\noindent Parameters: \texttt{(p : SkipLogicEngineParameters)}.\par
+\noindent Type: \texttt{Bool}.\par
+\noindent Definition: \texttt{(Nat.ble (1048576) ((p).frameArenaCapacityBytes))}.\par
+\noindent Axiom policy: \texttt{none}.\par
+\subsection*{\texttt{default\_params\_timing\_stable}}
+\noindent Kind: \texttt{theorem}.\par
+\noindent Statement: \texttt{(isTiming60Fps (defaultEngineParams) = true)}.\par
+\noindent Axiom policy: \texttt{none}.\par
+\subsection*{\texttt{default\_alignment\_valid}}
+\noindent Kind: \texttt{theorem}.\par
+\noindent Statement: \texttt{(isAlignmentValid (defaultEngineParams) = true)}.\par
+\noindent Axiom policy: \texttt{none}.\par
+\subsection*{\texttt{default\_capacity\_sufficient}}
+\noindent Kind: \texttt{theorem}.\par
+\noindent Statement: \texttt{(isCapacitySufficient (defaultEngineParams) = true)}.\par
+\noindent Axiom policy: \texttt{none}.\par
+\subsection*{\texttt{high\_performance\_alignment\_valid}}
+\noindent Kind: \texttt{theorem}.\par
+\noindent Statement: \texttt{(isAlignmentValid (highPerformanceEngineParams) = true)}.\par
+\noindent Axiom policy: \texttt{none}.\par
+\end{document}

@@ -1,0 +1,20 @@
+# Python cache
+__pycache__/
+*.py[cod]
+
+# Lake build artifacts
+.lake/build/
+
+# Temporary LaTeX build files
+*.aux
+*.log
+*.out
+*.toc
+*.fls
+*.fdb_latexmk
+*.synctex.gz
+
+# Timestamped reports archive (preserve latest)
+reports/*_20*.md
+reports/*_20*.json
+reports/logs/

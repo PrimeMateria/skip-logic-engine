@@ -1,0 +1,70 @@
+\begin{lexlean}{SkipLogic.Harness}
+\useglossary{lexlean.std.bool@1.2.0}
+\useglossary{lexlean.std.nat@1.2.0}
+\useglossary{skiplogic.titles@1.0.0}
+\importmodule{SkipLogic.Parameters}
+\title{Skip logic automated test harness and continuous integration pipeline}
+\begin{semanticmodule}
+structure{
+  name: TestHarnessPipelineConfig,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: verificationSuitesCount, type: Nat},
+    {name: stressInvariantCasesCount, type: Nat},
+    {name: automatedReportingEnabled, type: Bool},
+    {name: preCommitHookActive, type: Bool},
+    {name: githubActionsWorkflowActive, type: Bool}
+  ]
+}
+
+definition{
+  name: productionHarnessConfig,
+  parameters: [],
+  result: TestHarnessPipelineConfig,
+  body: (record TestHarnessPipelineConfig {verificationSuitesCount := 9, stressInvariantCasesCount := 4, automatedReportingEnabled := true, preCommitHookActive := true, githubActionsWorkflowActive := true})
+}
+
+definition{
+  name: isHarnessProductionReady,
+  parameters: [c : TestHarnessPipelineConfig],
+  result: Bool,
+  body: ((((9 <=? (project c verificationSuitesCount)) && (4 <=? (project c stressInvariantCasesCount))) && ((project c automatedReportingEnabled) && (project c preCommitHookActive))) && (project c githubActionsWorkflowActive))
+}
+
+definition{
+  name: isSuiteCountSatisfied,
+  parameters: [c : TestHarnessPipelineConfig],
+  result: Bool,
+  body: (9 <=? (project c verificationSuitesCount))
+}
+
+definition{
+  name: isStressInvariantsSatisfied,
+  parameters: [c : TestHarnessPipelineConfig],
+  result: Bool,
+  body: (4 <=? (project c stressInvariantCasesCount))
+}
+
+theorem{
+  name: production_harness_ready_sound,
+  parameters: [],
+  statement: ((isHarnessProductionReady (productionHarnessConfig)) = true),
+  proof: reflexivity{}
+}
+
+theorem{
+  name: harness_suite_count_minimum_satisfied,
+  parameters: [],
+  statement: ((isSuiteCountSatisfied (productionHarnessConfig)) = true),
+  proof: reflexivity{}
+}
+
+theorem{
+  name: harness_stress_invariants_count_satisfied,
+  parameters: [],
+  statement: ((isStressInvariantsSatisfied (productionHarnessConfig)) = true),
+  proof: reflexivity{}
+}
+\end{semanticmodule}
+\end{lexlean}

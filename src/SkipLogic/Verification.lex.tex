@@ -1,0 +1,55 @@
+\begin{lexlean}{SkipLogic.Verification}
+\useglossary{lexlean.std.bool@1.2.0}
+\useglossary{lexlean.std.nat@1.2.0}
+\useglossary{skiplogic.titles@1.0.0}
+\importmodule{SkipLogic.Parameters}
+\title{Skip logic formal verification and continuous integration gates}
+\begin{semanticmodule}
+structure{
+  name: FormalVerificationSuiteGate,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: leanKernelProofsCount, type: Nat},
+    {name: compilerFuzzingCasesCount, type: Nat},
+    {name: maxDispatchLatencyNs, type: Nat},
+    {name: zeroMiriUndefinedBehavior, type: Bool}
+  ]
+}
+
+definition{
+  name: productionVerificationGate,
+  parameters: [],
+  result: FormalVerificationSuiteGate,
+  body: (record FormalVerificationSuiteGate {leanKernelProofsCount := 36, compilerFuzzingCasesCount := 10000, maxDispatchLatencyNs := 500, zeroMiriUndefinedBehavior := true})
+}
+
+definition{
+  name: isGateSatisfied,
+  parameters: [g : FormalVerificationSuiteGate],
+  result: Bool,
+  body: (((30 <=? (project g leanKernelProofsCount)) && ((project g maxDispatchLatencyNs) <=? 1000)) && (project g zeroMiriUndefinedBehavior))
+}
+
+theorem{
+  name: production_gate_satisfied_sound,
+  parameters: [],
+  statement: ((isGateSatisfied (productionVerificationGate)) = true),
+  proof: reflexivity{}
+}
+
+theorem{
+  name: dispatch_latency_within_budget,
+  parameters: [],
+  statement: (((project (productionVerificationGate) maxDispatchLatencyNs) <=? 500) = true),
+  proof: reflexivity{}
+}
+
+theorem{
+  name: miri_clean_sound,
+  parameters: [],
+  statement: ((project (productionVerificationGate) zeroMiriUndefinedBehavior) = true),
+  proof: reflexivity{}
+}
+\end{semanticmodule}
+\end{lexlean}

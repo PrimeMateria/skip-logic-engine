@@ -1,0 +1,105 @@
+\section{ADR-0004: Zero-Allocation Inner Loop, Arena Memory Pools, and Cache-Aligned SIMD Layout}
+\label{sec:adr0004}
+
+\begin{adrbox}{ADR-0004: Zero-Allocation Memory Architecture}{Status: \statusbadge{ACCEPTED}}
+\textbf{Date:} 2026-11-23 \\
+\textbf{Context:} Memory layout, cache performance, and deterministic frame execution. \\
+\textbf{Deciders:} Performance Optimization Group, Systems Architecture Team \\
+\textbf{Status:} Accepted / Production Target
+\end{adrbox}
+
+\subsection{Context and Problem Statement}
+Standard heap allocation routines (`malloc`, `free`, Rust's `GlobalAlloc`) are non-deterministic: they incur lock contention in multi-threaded runtimes, induce heap fragmentation, and lead to cache misses \cite{gregory2018game, intel2023optimization}. Even short memory pauses or CPU cache misses can drop frames below the required 16.6ms (60 FPS) or 8.33ms (120 FPS) budgets \cite{gregory2018game}.
+
+High-dimensional prime tensor operations require contiguous memory layouts aligned to CPU cache line boundaries to fully leverage hardware SIMD vector units (AVX2, AVX-512, ARM NEON) \cite{intel2023optimization}.
+
+\subsection{Decision Drivers}
+\begin{enumerate}[label=\bfseries D\arabic*.]
+    \item \textbf{Zero Heap Allocations in Hot Loop:} Guarantee zero calls to the system heap allocator during active gameplay frame updates.
+    \item \textbf{Cache Line Alignment:} Align critical data structures to 64-byte boundaries, eliminating split cache-line penalties.
+    \item \textbf{Structure-of-Arrays (SoA) Representation:} Organize prime indices and amplitudes for contiguous SIMD loading.
+    \item \textbf{Bounded Memory Footprint:} Enforce strict upper bounds on memory consumption via static arena pre-allocation.
+\end{enumerate}
+
+\subsection{Decision Outcome}
+We mandate a \textbf{Zero-Allocation Memory Architecture} utilizing a two-phase Arena Memory Hierarchy and 64-byte aligned Structure-of-Arrays (SoA) layout.
+
+\subsubsection{Two-Tier Arena Memory Hierarchy}
+\begin{itemize}
+    \item \textbf{Level 1: Scene / Session Arena:} Allocated once during level loading. Holds long-lived curriculum topologies, static sheaf maps, and immutable narrative assets. Destroyed only on level transition.
+    \item \textbf{Level 2: Frame Scratch Arena:} A pre-allocated bump-pointer buffer (2MB per worker thread). Temporary scratch memory for tensor contractions, graph nodes, and intermediate telemetry math is bumped forward with zero allocation cost and cleared in $O(1)$ by resetting the pointer to zero at end-of-frame.
+\end{itemize}
+
+\begin{figure}[htbp]
+\centering
+\begin{tikzpicture}[scale=0.9, every node/.style={transform shape}]
+    % 64-byte Cache Line
+    \draw[thick, fill=primaryblue!10] (0, 0) rectangle (12, 1.2);
+    \node at (6, 0.6) {\textbf{64-Byte Cache Line Bound (16 $\times$ 32-bit floats)}};
+    
+    % Sub-lanes
+    \foreach \x in {0.75, 1.5, ..., 11.25} {
+        \draw[dashed, primaryblue!40] (\x, 0) -- (\x, 1.2);
+    }
+    
+    % Annotation
+    \node at (6, -0.6) [align=center] {\textsf{\footnotesize 512-bit SIMD Vector Lane (AVX-512 / AVX2 dual-issue)\\\textbf{Structure-of-Arrays (SoA)} contiguously aligned}};
+\end{tikzpicture}
+\caption{Cache-Aligned Structure-of-Arrays (SoA) Layout for SIMD Prime Amplitudes.}
+\label{fig:cache_layout}
+\end{figure}
+
+\subsection{Data Structures and Memory Alignment}
+
+\begin{lstlisting}[language=Rust, caption={64-Byte Aligned SoA Prime State Pool and Bump Arena}]
+#[repr(align(64))]
+pub struct AlignedPrimeBasisSoA {
+    /// 64-byte aligned prime array: p_0, p_1, ..., p_63
+    pub prime_keys: [u32; 64],
+    /// Contiguous floating-point amplitudes for AVX-512 loading
+    pub amplitudes: [f32; 64],
+    /// Velocity of cognitive change d(alpha)/dt
+    pub velocity: [f32; 64],
+}
+
+pub struct FrameScratchArena {
+    buffer: Box<[u8]>,
+    offset: std::cell::Cell<usize>,
+}
+
+impl FrameScratchArena {
+    pub fn new(capacity_bytes: usize) -> Self {
+        Self {
+            buffer: vec![0u8; capacity_bytes].into_boxed_slice(),
+            offset: std::cell::Cell::new(0),
+        }
+    }
+
+    #[inline(always)]
+    pub fn alloc_raw(&self, size: usize, align: usize) -> *mut u8 {
+        let current = self.offset.get();
+        let aligned = (current + align - 1) & !(align - 1);
+        assert!(aligned + size <= self.buffer.len(), "Frame arena exhausted!");
+        self.offset.set(aligned + size);
+        unsafe { self.buffer.as_ptr().add(aligned) as *mut u8 }
+    }
+
+    #[inline(always)]
+    pub fn reset(&self) {
+        self.offset.set(0); // O(1) instantaneous frame clearance
+    }
+}
+\end{lstlisting}
+
+\subsection{Consequences}
+\subsubsection{Positive}
+\begin{itemize}
+    \item \textbf{Zero Jitter:} Frame times show near-zero standard deviation; GC pauses and allocator lock waits are completely eliminated.
+    \item \textbf{Peak Hardware Utilization:} Contiguous float arrays allow SIMD instructions (`_mm512_fmadd_ps`) to achieve theoretical memory bandwidth limits.
+    \item \textbf{Guaranteed Footprint:} Static allocation prevents out-of-memory (OOM) crashes during prolonged play sessions.
+\end{itemize}
+
+\subsubsection{Negative and Mitigations}
+\begin{itemize}
+    \item \textbf{Fixed Buffer Ceilings:} Exceeding scratch arena capacity triggers an assertion. \textbf{Mitigation:} Over-provision scratch arenas by $3\times$ peak historical requirement (e.g., 4MB per thread) and enforce static capacity validation in CI.
+\end{itemize}

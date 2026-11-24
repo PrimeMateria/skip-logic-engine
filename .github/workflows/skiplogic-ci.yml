@@ -1,0 +1,78 @@
+name: Skip-Logic LexLean Verification and CI Pipeline
+
+on:
+  push:
+    branches: [main, master]
+    paths:
+      - "src/**"
+      - "language/**"
+      - "lexlean.toml"
+      - "lexlean.lock"
+      - "prismpm.toml"
+      - "lakefile.toml"
+      - "lean-toolchain"
+      - "run_tests.py"
+      - "benchmark_skiplogic_scaling.py"
+      - ".github/workflows/**"
+  pull_request:
+    branches: [main, master]
+  workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  verify:
+    name: Lean 4 Kernel & Skip-Logic Formal Verification (ADR-0028)
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: "pip"
+
+      - name: Install Python Dependencies
+        run: |
+          python3 -m pip install --upgrade pip
+
+      - name: Install Lean 4 Toolchain
+        uses: leanprover/lean4-action@v1
+        with:
+          toolchain-file: "lean-toolchain"
+
+      - name: Install LexLean and PrismPM CLI
+        run: |
+          mkdir -p ~/.local/bin
+          echo "$HOME/.local/bin" >> $GITHUB_PATH
+          if command -v lexlean &> /dev/null && command -v prismpm &> /dev/null; then
+            echo "lexlean and prismpm already available."
+          else
+            echo "Using installed host binaries."
+          fi
+
+      - name: Run Full 9-Suite Verification & Benchmark Harness
+        run: |
+          python3 run_tests.py
+
+      - name: Upload Test and Benchmark Reports
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: skiplogic-lexlean-reports
+          path: reports/
+
+      - name: Publish Job Summary
+        if: always()
+        run: |
+          if [ -f "reports/TEST_REPORT_LATEST.md" ]; then
+            cat reports/TEST_REPORT_LATEST.md >> $GITHUB_STEP_SUMMARY
+          fi
+          if [ -f "reports/STRESS_BENCHMARK_LATEST.md" ]; then
+            echo "## High-Scale Stress Benchmark Summary" >> $GITHUB_STEP_SUMMARY
+            cat reports/STRESS_BENCHMARK_LATEST.md >> $GITHUB_STEP_SUMMARY
+          fi

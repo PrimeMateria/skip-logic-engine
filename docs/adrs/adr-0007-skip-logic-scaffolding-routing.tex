@@ -1,0 +1,115 @@
+\section{ADR-0007: Dynamic Skip-Logic Scaffolding and Sheaf-Morphic Adaptive Trajectory Routing}
+\label{sec:adr0007}
+
+\begin{adrbox}{ADR-0007: Dynamic Skip-Logic Scaffolding}{Status: \statusbadge{ACCEPTED}}
+\textbf{Date:} 2026-11-23 \\
+\textbf{Context:} Runtime non-linear routing, interactive simulations, and cognitive intervention. \\
+\textbf{Deciders:} Narrative Systems Team, Cognitive Engineering Group \\
+\textbf{Status:} Accepted / Production Target
+\end{adrbox}
+
+\subsection{Context and Problem Statement}
+Classical linear branching forces users down rigid, pre-authored dialogue trees or hardcoded failure loops \cite{nystrom2014game}. When a user encounters a cognitive barrier (such as conceptual difficulty with exponential growth or vector calculus), standard game engines either fail the user repeatedly or present simplistic text hints \cite{mourokh2024qari}. 
+
+In contrast, production-grade skip-logic must dynamically detect cognitive stalls, route the user into scaffolded, interactive micro-simulations (e.g., visual PhET modules), and guarantee seamless return convergence to the primary curriculum objective without narrative discontinuity \cite{mourokh2024qari}.
+
+\subsection{Decision Drivers}
+\begin{enumerate}[label=\bfseries D\arabic*.]
+    \item \textbf{Autonomous Scaffolding Detection:} Identify conceptual deficiencies automatically by decomposing state vector $\PsiVec$ into prime factor criteria.
+    \item \textbf{Topological Convergence Guarantees:} Mathematically guarantee that all dynamic skip routes converge back to the primary trajectory (no orphan loops).
+    \item \textbf{Interactive Micro-Module Injection:} Dynamically mount and unmount interactive simulation engines (e.g., PhET physics/math interactive simulations).
+    \item \textbf{Narrative Preservation:} Maintain emotional immersion and narrative coherence across dynamic diversion branches.
+\end{enumerate}
+
+\subsection{Decision Outcome}
+We implement a **Closed-Loop Sheaf-Morphic Skip-Logic Routing Engine**.
+
+\subsubsection{Algorithmic Trigger Logic}
+The skip-logic routing subsystem continuously monitors state vector $\PsiVec$ and the telemetry metrics $\RLG(t)$ and $\EFC(t)$:
+\begin{enumerate}
+    \item \textbf{Stall Detection:} A cognitive stall on prime concept $p_i$ is triggered when:
+    \begin{equation}
+    \alpha_{p_i}(t) < \tau_{\text{mastery}} \quad \text{and} \quad \frac{d}{dt}\alpha_{p_i}(t) \le \epsilon_{\text{stagnant}}
+    \end{equation}
+    \item \textbf{Morphic Diversion:} The engine activates the sheaf morphism:
+    \begin{equation}
+    \Phi_{\text{scaffold}}: \mathcal{U}_{\text{primary}} \longrightarrow \mathcal{U}_{\text{scaffold}}^{(p_i)}
+    \end{equation}
+    diverting user interaction from the primary scene into a targeted visual scaffolding module.
+    \item \textbf{Scaffold Execution:} The Resource Subsystem mounts the interactive micro-simulation (e.g., a PhET vector addition simulation).
+    \item \textbf{Convergence and Return:} As the learner interacts with the scaffolding module, $\alpha_{p_i}(t)$ increases. Once $\alpha_{p_i}(t) \ge \tau_{\text{return}}$, the inverse sheaf morphism $\Phi_{\text{return}}$ glues the learner back into the primary narrative trajectory.
+\end{enumerate}
+
+\begin{figure}[htbp]
+\centering
+\begin{tikzpicture}[scale=0.95, every node/.style={transform shape}, auto, >=Stealth]
+    % Primary trajectory
+    \node [draw, thick, rectangle, fill=primaryblue!15, rounded corners] (nodeA) {\textbf{Task Node A}\\Prime 2 Mastery};
+    \node [draw, thick, rectangle, fill=primaryblue!15, rounded corners, right=4cm of nodeA] (nodeB) {\textbf{Task Node B}\\Primes $2 \cdot 3$ Composite};
+    
+    % Scaffold branch
+    \node [draw, ultra thick, rectangle, fill=statusproposed!20, rounded corners, below=2cm of $(nodeA)!0.5!(nodeB)$] (scaffold) {
+        \textbf{Scaffolded Sheaf: PhET Simulation Module}\\
+        \footnotesize Prime $\ket{3}$ Targeted Scaffolding (Spatial Dynamics)\\
+        Exit Criteria: $\alpha_3(t) \ge 0.90$
+    };
+
+    % Direct path (failed)
+    \draw [->, thick, dashed, red] (nodeA) -- node[above, font=\footnotesize, text=red] {Direct path blocked: $\alpha_3 < 0.60$} (nodeB);
+    
+    % Divert arrow
+    \draw [->, ultra thick, primaryblue] (nodeA) |- node[near start, left, font=\footnotesize] {Skip-Logic Trigger: $\Phi_{\text{scaffold}}$} (scaffold);
+    
+    % Return arrow
+    \draw [->, ultra thick, statusaccepted] (scaffold) -| node[near end, right, font=\footnotesize] {Convergence: $\Phi_{\text{return}}$} (nodeB);
+\end{tikzpicture}
+\caption{Sheaf-Morphic Skip-Logic Trajectory Diversion and Convergence.}
+\label{fig:skip_logic_routing}
+\end{figure}
+
+\subsection{Rust Routing State Machine}
+
+\begin{lstlisting}[language=Rust, caption={Dynamic Sheaf-Morphic Skip-Logic Router}]
+pub struct SheafMorphism {
+    pub required_prime: u32,
+    pub trigger_threshold: f32,
+    pub return_threshold: f32,
+    pub scaffold_bundle_id: &'static str,
+}
+
+pub struct SkipLogicRouter {
+    morphisms: &'static [SheafMorphism],
+    current_sheaf_id: u32,
+}
+
+impl SkipLogicRouter {
+    pub fn evaluate_routing(&mut self, state: &PrimeStateVector, rlg: f32) -> Option<RoutingCommand> {
+        for morphism in self.morphisms {
+            let prime_idx = morphism.required_prime;
+            if let Some(amp) = state.get_amplitude(prime_idx) {
+                // Cognitive deficit detected; initiate dynamic skip logic
+                if amp < morphism.trigger_threshold && rlg < 0.5 {
+                    return Some(RoutingCommand::DivertToScaffold {
+                        bundle_id: morphism.scaffold_bundle_id,
+                        target_sheaf: prime_idx,
+                    });
+                }
+            }
+        }
+        None
+    }
+}
+\end{lstlisting}
+
+\subsection{Consequences}
+\subsubsection{Positive}
+\begin{itemize}
+    \item \textbf{Guaranteed Progression:} Players are never permanently stuck; targeted interactive scaffolds remediate specific concept deficits in real time.
+    \item \textbf{Topological Safety:} Compile-time sheaf checks ensure all skip branches return to the main manifold.
+    \item \textbf{Maximized RLG:} Dynamically minimizes wasted structural interventions, maximizing long-term learning gain.
+\end{itemize}
+
+\subsubsection{Negative and Mitigations}
+\begin{itemize}
+    \item \textbf{Asset Loading Latency:} Loading simulation bundles dynamically could cause hitching. \textbf{Mitigation:} Pre-cache high-probability scaffolding bundles in background threads based on predictive state trends.
+\end{itemize}

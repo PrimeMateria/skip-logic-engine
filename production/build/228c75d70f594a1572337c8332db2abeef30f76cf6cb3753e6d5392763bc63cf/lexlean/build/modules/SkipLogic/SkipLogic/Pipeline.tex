@@ -1,0 +1,41 @@
+\documentclass[11pt]{article}
+\usepackage[T1]{fontenc}
+\usepackage{amsmath,amssymb}
+\begin{document}
+\section*{Semantic declarations}
+\subsection*{\texttt{CompilationPipelineStatus}}
+\noindent Kind: \texttt{structure}.\par
+\noindent Field \texttt{totalTiersCount}: \texttt{Nat}.\par
+\noindent Field \texttt{deadBranchesPruned}: \texttt{Nat}.\par
+\noindent Field \texttt{simdVectorWidthBits}: \texttt{Nat}.\par
+\noindent Field \texttt{zeroCostRustEmitted}: \texttt{Bool}.\par
+\subsection*{\texttt{defaultPipelineStatus}}
+\noindent Kind: \texttt{definition}.\par
+\noindent Type: \texttt{CompilationPipelineStatus}.\par
+\noindent Definition: \texttt{(\{ totalTiersCount := 3, deadBranchesPruned := 14, simdVectorWidthBits := 512, zeroCostRustEmitted := true \} : CompilationPipelineStatus)}.\par
+\noindent Axiom policy: \texttt{none}.\par
+\subsection*{\texttt{isThreeTierPipeline}}
+\noindent Kind: \texttt{definition}.\par
+\noindent Parameters: \texttt{(status : CompilationPipelineStatus)}.\par
+\noindent Type: \texttt{Bool}.\par
+\noindent Definition: \texttt{((Nat.beq ((status).totalTiersCount) (3)) \&\& (status).zeroCostRustEmitted)}.\par
+\noindent Axiom policy: \texttt{none}.\par
+\subsection*{\texttt{isSimdWidthValid}}
+\noindent Kind: \texttt{definition}.\par
+\noindent Parameters: \texttt{(status : CompilationPipelineStatus)}.\par
+\noindent Type: \texttt{Bool}.\par
+\noindent Definition: \texttt{((Nat.beq ((status).simdVectorWidthBits) (256)) || (Nat.beq ((status).simdVectorWidthBits) (512)))}.\par
+\noindent Axiom policy: \texttt{none}.\par
+\subsection*{\texttt{pipeline\_three\_tier\_sound}}
+\noindent Kind: \texttt{theorem}.\par
+\noindent Statement: \texttt{(isThreeTierPipeline (defaultPipelineStatus) = true)}.\par
+\noindent Axiom policy: \texttt{none}.\par
+\subsection*{\texttt{simd\_vector\_width\_valid}}
+\noindent Kind: \texttt{theorem}.\par
+\noindent Statement: \texttt{(isSimdWidthValid (defaultPipelineStatus) = true)}.\par
+\noindent Axiom policy: \texttt{none}.\par
+\subsection*{\texttt{dead\_branch\_pruning\_sound}}
+\noindent Kind: \texttt{theorem}.\par
+\noindent Statement: \texttt{((Nat.ble (0) ((defaultPipelineStatus).deadBranchesPruned)) = true)}.\par
+\noindent Axiom policy: \texttt{none}.\par
+\end{document}

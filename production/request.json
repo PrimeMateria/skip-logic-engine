@@ -1,0 +1,18 @@
+{
+  "spec": "lexlean/production-request/1",
+  "roots": [
+    {
+      "package": {
+        "name": "skiplogic_parameters",
+        "version": "0.1.0"
+      },
+      "root": "SkipLogic.SkipLogic.Parameters.defaultEngineParams",
+      "targets": [
+        {
+          "digest": "d664a7da9c2a8d81a49a5418c842ab5a99550375cd506b5c46c5e4fcc35d1371",
+          "id": "rust-std"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,47 @@
+\documentclass[11pt]{article}
+\usepackage[T1]{fontenc}
+\usepackage{amsmath,amssymb}
+\begin{document}
+\section*{Semantic declarations}
+\subsection*{\texttt{TaskGraphScheduleConfig}}
+\noindent Kind: \texttt{structure}.\par
+\noindent Field \texttt{maxTaskNodesCapacity}: \texttt{Nat}.\par
+\noindent Field \texttt{workerThreadsCount}: \texttt{Nat}.\par
+\noindent Field \texttt{maxDependencyDepth}: \texttt{Nat}.\par
+\noindent Field \texttt{isLockFreeScheduler}: \texttt{Bool}.\par
+\subsection*{\texttt{defaultTaskGraphConfig}}
+\noindent Kind: \texttt{definition}.\par
+\noindent Type: \texttt{TaskGraphScheduleConfig}.\par
+\noindent Definition: \texttt{(\{ maxTaskNodesCapacity := 256, workerThreadsCount := 8, maxDependencyDepth := 16, isLockFreeScheduler := true \} : TaskGraphScheduleConfig)}.\par
+\noindent Axiom policy: \texttt{none}.\par
+\subsection*{\texttt{isSchedulerLockFree}}
+\noindent Kind: \texttt{definition}.\par
+\noindent Parameters: \texttt{(c : TaskGraphScheduleConfig)}.\par
+\noindent Type: \texttt{Bool}.\par
+\noindent Definition: \texttt{(c).isLockFreeScheduler}.\par
+\noindent Axiom policy: \texttt{none}.\par
+\subsection*{\texttt{isDagAcyclicBounded}}
+\noindent Kind: \texttt{definition}.\par
+\noindent Parameters: \texttt{(c : TaskGraphScheduleConfig)}.\par
+\noindent Type: \texttt{Bool}.\par
+\noindent Definition: \texttt{(Nat.ble ((c).maxDependencyDepth) (64))}.\par
+\noindent Axiom policy: \texttt{none}.\par
+\subsection*{\texttt{canSatisfyDependency}}
+\noindent Kind: \texttt{definition}.\par
+\noindent Parameters: \texttt{(depRemaining : Nat)}.\par
+\noindent Type: \texttt{Bool}.\par
+\noindent Definition: \texttt{(Nat.beq (depRemaining) (0))}.\par
+\noindent Axiom policy: \texttt{none}.\par
+\subsection*{\texttt{task\_graph\_lock\_free\_sound}}
+\noindent Kind: \texttt{theorem}.\par
+\noindent Statement: \texttt{(isSchedulerLockFree (defaultTaskGraphConfig) = true)}.\par
+\noindent Axiom policy: \texttt{none}.\par
+\subsection*{\texttt{task\_graph\_acyclic\_bounded}}
+\noindent Kind: \texttt{theorem}.\par
+\noindent Statement: \texttt{(isDagAcyclicBounded (defaultTaskGraphConfig) = true)}.\par
+\noindent Axiom policy: \texttt{none}.\par
+\subsection*{\texttt{dependency\_satisfaction\_sound}}
+\noindent Kind: \texttt{theorem}.\par
+\noindent Statement: \texttt{((canSatisfyDependency (0) \&\& (!canSatisfyDependency (1))) = true)}.\par
+\noindent Axiom policy: \texttt{none}.\par
+\end{document}

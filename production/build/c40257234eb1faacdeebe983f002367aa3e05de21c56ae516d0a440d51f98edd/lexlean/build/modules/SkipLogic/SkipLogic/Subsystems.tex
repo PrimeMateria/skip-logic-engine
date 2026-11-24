@@ -1,0 +1,49 @@
+\documentclass[11pt]{article}
+\usepackage[T1]{fontenc}
+\usepackage{amsmath,amssymb}
+\begin{document}
+\section*{Semantic declarations}
+\subsection*{\texttt{SubsystemArchitectureLayout}}
+\noindent Kind: \texttt{structure}.\par
+\noindent Field \texttt{logicSubsystemId}: \texttt{Nat}.\par
+\noindent Field \texttt{platformSubsystemId}: \texttt{Nat}.\par
+\noindent Field \texttt{viewSubsystemId}: \texttt{Nat}.\par
+\noindent Field \texttt{resourceSubsystemId}: \texttt{Nat}.\par
+\noindent Field \texttt{snapshotBufferCapacity}: \texttt{Nat}.\par
+\noindent Field \texttt{viewHasWriteAccess}: \texttt{Bool}.\par
+\subsection*{\texttt{defaultSubsystemsLayout}}
+\noindent Kind: \texttt{definition}.\par
+\noindent Type: \texttt{SubsystemArchitectureLayout}.\par
+\noindent Definition: \texttt{(\{ logicSubsystemId := 1, platformSubsystemId := 2, viewSubsystemId := 3, resourceSubsystemId := 4, snapshotBufferCapacity := 3, viewHasWriteAccess := false \} : SubsystemArchitectureLayout)}.\par
+\noindent Axiom policy: \texttt{none}.\par
+\subsection*{\texttt{isQuadLayerSubsystem}}
+\noindent Kind: \texttt{definition}.\par
+\noindent Parameters: \texttt{(s : SubsystemArchitectureLayout)}.\par
+\noindent Type: \texttt{Bool}.\par
+\noindent Definition: \texttt{((Nat.beq ((s).logicSubsystemId) (1)) \&\& ((Nat.beq ((s).platformSubsystemId) (2)) \&\& ((Nat.beq ((s).viewSubsystemId) (3)) \&\& (Nat.beq ((s).resourceSubsystemId) (4)))))}.\par
+\noindent Axiom policy: \texttt{none}.\par
+\subsection*{\texttt{isViewIsolatedReadOnly}}
+\noindent Kind: \texttt{definition}.\par
+\noindent Parameters: \texttt{(s : SubsystemArchitectureLayout)}.\par
+\noindent Type: \texttt{Bool}.\par
+\noindent Definition: \texttt{(!(s).viewHasWriteAccess)}.\par
+\noindent Axiom policy: \texttt{none}.\par
+\subsection*{\texttt{rotateTripleBufferIndex}}
+\noindent Kind: \texttt{definition}.\par
+\noindent Parameters: \texttt{(currentIndex : Nat)}.\par
+\noindent Type: \texttt{Nat}.\par
+\noindent Definition: \texttt{(if (Nat.beq (currentIndex) (2)) then 0 else (currentIndex + 1))}.\par
+\noindent Axiom policy: \texttt{none}.\par
+\subsection*{\texttt{quad\_layer\_subsystems\_sound}}
+\noindent Kind: \texttt{theorem}.\par
+\noindent Statement: \texttt{(isQuadLayerSubsystem (defaultSubsystemsLayout) = true)}.\par
+\noindent Axiom policy: \texttt{none}.\par
+\subsection*{\texttt{view\_isolated\_read\_only\_sound}}
+\noindent Kind: \texttt{theorem}.\par
+\noindent Statement: \texttt{(isViewIsolatedReadOnly (defaultSubsystemsLayout) = true)}.\par
+\noindent Axiom policy: \texttt{none}.\par
+\subsection*{\texttt{triple\_buffer\_rotation\_sound}}
+\noindent Kind: \texttt{theorem}.\par
+\noindent Statement: \texttt{(((Nat.beq (rotateTripleBufferIndex (0)) (1)) \&\& ((Nat.beq (rotateTripleBufferIndex (1)) (2)) \&\& (Nat.beq (rotateTripleBufferIndex (2)) (0)))) = true)}.\par
+\noindent Axiom policy: \texttt{none}.\par
+\end{document}

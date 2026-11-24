@@ -1,0 +1,10 @@
+module
+import SkipLogic.SkipLogic.Harness
+#print axioms SkipLogic.SkipLogic.Harness.TestHarnessPipelineConfig
+#print axioms SkipLogic.SkipLogic.Harness.harness_stress_invariants_count_satisfied
+#print axioms SkipLogic.SkipLogic.Harness.harness_suite_count_minimum_satisfied
+#print axioms SkipLogic.SkipLogic.Harness.isHarnessProductionReady
+#print axioms SkipLogic.SkipLogic.Harness.isStressInvariantsSatisfied
+#print axioms SkipLogic.SkipLogic.Harness.isSuiteCountSatisfied
+#print axioms SkipLogic.SkipLogic.Harness.productionHarnessConfig
+#print axioms SkipLogic.SkipLogic.Harness.production_harness_ready_sound

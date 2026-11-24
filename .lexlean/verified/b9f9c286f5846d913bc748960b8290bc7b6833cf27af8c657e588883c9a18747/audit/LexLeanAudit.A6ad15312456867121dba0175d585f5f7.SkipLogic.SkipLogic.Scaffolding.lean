@@ -1,0 +1,9 @@
+module
+import SkipLogic.SkipLogic.Scaffolding
+#print axioms SkipLogic.SkipLogic.Scaffolding.SheafMorphismRoute
+#print axioms SkipLogic.SkipLogic.Scaffolding.isReturnReady
+#print axioms SkipLogic.SkipLogic.Scaffolding.isStallDetected
+#print axioms SkipLogic.SkipLogic.Scaffolding.scaffolding_return_ready_sound
+#print axioms SkipLogic.SkipLogic.Scaffolding.scaffolding_stall_detected_sound
+#print axioms SkipLogic.SkipLogic.Scaffolding.sheaf_morphism_convergence_guaranteed
+#print axioms SkipLogic.SkipLogic.Scaffolding.spatialScaffoldRoute

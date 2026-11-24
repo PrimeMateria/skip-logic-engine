@@ -1,0 +1,16 @@
+spec = "lexlean/entry/1"
+id = "skiplogic-statespace"
+category = "label-word"
+surface_arity = 0
+frame = "atom"
+
+[denotation]
+kind = "defined"
+value = "(const lexlean.std.nat::nat)"
+
+[[form]]
+id = "skiplogic-statespace"
+channel = "text"
+surface = "Skip logic prime state space and dynamic operator"
+canonical_source = true
+features = ["sentence-case", "singular"]

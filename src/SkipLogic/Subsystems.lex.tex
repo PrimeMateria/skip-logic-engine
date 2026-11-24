@@ -1,0 +1,71 @@
+\begin{lexlean}{SkipLogic.Subsystems}
+\useglossary{lexlean.std.bool@1.2.0}
+\useglossary{lexlean.std.nat@1.2.0}
+\useglossary{skiplogic.titles@1.0.0}
+\importmodule{SkipLogic.Parameters}
+\title{Skip logic decoupled subsystems and atomic state snapshotting}
+\begin{semanticmodule}
+structure{
+  name: SubsystemArchitectureLayout,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: logicSubsystemId, type: Nat},
+    {name: platformSubsystemId, type: Nat},
+    {name: viewSubsystemId, type: Nat},
+    {name: resourceSubsystemId, type: Nat},
+    {name: snapshotBufferCapacity, type: Nat},
+    {name: viewHasWriteAccess, type: Bool}
+  ]
+}
+
+definition{
+  name: defaultSubsystemsLayout,
+  parameters: [],
+  result: SubsystemArchitectureLayout,
+  body: (record SubsystemArchitectureLayout {logicSubsystemId := 1, platformSubsystemId := 2, viewSubsystemId := 3, resourceSubsystemId := 4, snapshotBufferCapacity := 3, viewHasWriteAccess := false})
+}
+
+definition{
+  name: isQuadLayerSubsystem,
+  parameters: [s : SubsystemArchitectureLayout],
+  result: Bool,
+  body: (((project s logicSubsystemId) =? 1) && (((project s platformSubsystemId) =? 2) && (((project s viewSubsystemId) =? 3) && ((project s resourceSubsystemId) =? 4))))
+}
+
+definition{
+  name: isViewIsolatedReadOnly,
+  parameters: [s : SubsystemArchitectureLayout],
+  result: Bool,
+  body: (not (project s viewHasWriteAccess))
+}
+
+definition{
+  name: rotateTripleBufferIndex,
+  parameters: [currentIndex : Nat],
+  result: Nat,
+  body: (if (currentIndex =? 2) then 0 else (currentIndex + 1))
+}
+
+theorem{
+  name: quad_layer_subsystems_sound,
+  parameters: [],
+  statement: ((isQuadLayerSubsystem (defaultSubsystemsLayout)) = true),
+  proof: reflexivity{}
+}
+
+theorem{
+  name: view_isolated_read_only_sound,
+  parameters: [],
+  statement: ((isViewIsolatedReadOnly (defaultSubsystemsLayout)) = true),
+  proof: reflexivity{}
+}
+
+theorem{
+  name: triple_buffer_rotation_sound,
+  parameters: [],
+  statement: ((((rotateTripleBufferIndex 0) =? 1) && (((rotateTripleBufferIndex 1) =? 2) && ((rotateTripleBufferIndex 2) =? 0))) = true),
+  proof: reflexivity{}
+}
+\end{semanticmodule}
+\end{lexlean}

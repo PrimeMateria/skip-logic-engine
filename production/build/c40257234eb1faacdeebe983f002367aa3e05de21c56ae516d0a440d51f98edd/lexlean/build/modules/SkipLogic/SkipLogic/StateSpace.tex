@@ -1,0 +1,59 @@
+\documentclass[11pt]{article}
+\usepackage[T1]{fontenc}
+\usepackage{amsmath,amssymb}
+\begin{document}
+\section*{Semantic declarations}
+\subsection*{\texttt{PrimeBasisState}}
+\noindent Kind: \texttt{structure}.\par
+\noindent Field \texttt{primeId}: \texttt{Nat}.\par
+\noindent Field \texttt{amplitudeScaled}: \texttt{Nat}.\par
+\noindent Field \texttt{velocityScaled}: \texttt{Nat}.\par
+\subsection*{\texttt{CompositeState}}
+\noindent Kind: \texttt{structure}.\par
+\noindent Field \texttt{compositeProduct}: \texttt{Nat}.\par
+\noindent Field \texttt{activePrimesCount}: \texttt{Nat}.\par
+\noindent Field \texttt{isFactorizable}: \texttt{Bool}.\par
+\subsection*{\texttt{atomicStateCounting}}
+\noindent Kind: \texttt{definition}.\par
+\noindent Type: \texttt{PrimeBasisState}.\par
+\noindent Definition: \texttt{(\{ primeId := 2, amplitudeScaled := 850, velocityScaled := 12 \} : PrimeBasisState)}.\par
+\noindent Axiom policy: \texttt{none}.\par
+\subsection*{\texttt{atomicStateSpatial}}
+\noindent Kind: \texttt{definition}.\par
+\noindent Type: \texttt{PrimeBasisState}.\par
+\noindent Definition: \texttt{(\{ primeId := 3, amplitudeScaled := 550, velocityScaled := 4 \} : PrimeBasisState)}.\par
+\noindent Axiom policy: \texttt{none}.\par
+\subsection*{\texttt{compositeStateSpatialCounting}}
+\noindent Kind: \texttt{definition}.\par
+\noindent Type: \texttt{CompositeState}.\par
+\noindent Definition: \texttt{(\{ compositeProduct := 6, activePrimesCount := 2, isFactorizable := true \} : CompositeState)}.\par
+\noindent Axiom policy: \texttt{none}.\par
+\subsection*{\texttt{isPrimeBasisOrthogonal}}
+\noindent Kind: \texttt{definition}.\par
+\noindent Parameters: \texttt{(p1 : Nat) (p2 : Nat)}.\par
+\noindent Type: \texttt{Bool}.\par
+\noindent Definition: \texttt{(if (Nat.beq (p1) (p2)) then true else (!(Nat.beq (p1) (p2))))}.\par
+\noindent Axiom policy: \texttt{none}.\par
+\subsection*{\texttt{computeCompositeProduct}}
+\noindent Kind: \texttt{definition}.\par
+\noindent Parameters: \texttt{(p1 : Nat) (p2 : Nat)}.\par
+\noindent Type: \texttt{Nat}.\par
+\noindent Definition: \texttt{(LexLeanRuntime.multiply (p1) (p2) : Nat)}.\par
+\noindent Axiom policy: \texttt{none}.\par
+\subsection*{\texttt{prime\_basis\_orthogonality\_sound}}
+\noindent Kind: \texttt{theorem}.\par
+\noindent Statement: \texttt{(isPrimeBasisOrthogonal (2) (3) = true)}.\par
+\noindent Axiom policy: \texttt{none}.\par
+\subsection*{\texttt{composite\_state\_product\_sound}}
+\noindent Kind: \texttt{theorem}.\par
+\noindent Statement: \texttt{((Nat.beq (computeCompositeProduct (2) (3)) (6)) = true)}.\par
+\noindent Axiom policy: \texttt{none}.\par
+\subsection*{\texttt{composite\_state\_factorizable\_sound}}
+\noindent Kind: \texttt{theorem}.\par
+\noindent Statement: \texttt{((compositeStateSpatialCounting).isFactorizable = true)}.\par
+\noindent Axiom policy: \texttt{none}.\par
+\subsection*{\texttt{atomic\_state\_counting\_prime}}
+\noindent Kind: \texttt{theorem}.\par
+\noindent Statement: \texttt{((Nat.beq ((atomicStateCounting).primeId) (2)) = true)}.\par
+\noindent Axiom policy: \texttt{none}.\par
+\end{document}
